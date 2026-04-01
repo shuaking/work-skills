@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKIILs - 多技能工具库</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { font-family: system-ui, sans-serif; }
+    .hero { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+    .skill-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .skill-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-gray-100">
+  <!-- Navbar -->
+  <nav class="bg-white dark:bg-zinc-900 shadow-sm sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🚀</span>
+        <h1 class="text-3xl font-bold text-indigo-600">SKIILs</h1>
+      </div>
+      <a href="https://github.com/你的用户名/SKIILs" target="_blank" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-black">
+        <i class="fab fa-github text-2xl"></i> GitHub
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero text-white py-24">
+    <div class="max-w-4xl mx-auto text-center px-6">
+      <h2 class="text-6xl font-bold mb-6">SKIILs</h2>
+      <p class="text-2xl mb-8">随时可被任意项目调用的多技能工具库</p>
+      <div class="inline-flex items-center gap-4 bg-white/20 backdrop-blur-md px-10 py-5 rounded-3xl text-xl">
+        <code class="bg-black/30 px-6 py-3 rounded-2xl font-mono text-sm">pip install git+https://github.com/你的用户名/SKIILs.git</code>
+      </div>
+    </div>
+  </header>
+
+  <!-- Skills Grid -->
+  <section id="skills" class="max-w-6xl mx-auto px-6 py-20">
+    <h3 class="text-4xl font-bold text-center mb-16">当前可用技能（已上线 8 个）</h3>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- 数据技能 -->
+      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-indigo-100">
+        <div class="text-5xl mb-6">📊</div>
+        <h4 class="text-2xl font-semibold mb-3">数据处理技能</h4>
+        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> clean_list</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> calculate_stats</li>
+        </ul>
+      </div>
+      <!-- 文本技能 -->
+      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-purple-100">
+        <div class="text-5xl mb-6">📝</div>
+        <h4 class="text-2xl font-semibold mb-3">文本处理技能</h4>
+        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> word_count</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> summarize</li>
+        </ul>
+      </div>
+      <!-- 工具技能 -->
+      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-emerald-100">
+        <div class="text-5xl mb-6">🛠️</div>
+        <h4 class="text-2xl font-semibold mb-3">通用工具技能</h4>
+        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> get_time</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> hello_world</li>
+        </ul>
+      </div>
+      <!-- AI技能 -->
+      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-violet-100">
+        <div class="text-5xl mb-6">🤖</div>
+        <h4 class="text-2xl font-semibold mb-3 text-violet-600">AI 智能技能</h4>
+        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> generate_prompt</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> simple_ai_chat</li>
+        </ul>
+      </div>
+      <!-- 文件技能 -->
+      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-amber-100">
+        <div class="text-5xl mb-6">📁</div>
+        <h4 class="text-2xl font-semibold mb-3 text-amber-600">文件操作技能</h4>
+        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> list_files</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> save_to_file</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Demo -->
+  <section id="demo" class="bg-white dark:bg-zinc-900 py-20">
+    <div class="max-w-4xl mx-auto px-6">
+      <h3 class="text-4xl font-bold text-center mb-12">在线实时演示</h3>
+      <!-- 文本摘要 Demo -->
+      <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10 shadow-inner">
+        <h4 class="font-semibold text-xl mb-6 flex items-center gap-3"><i class="fas fa-magic"></i> 文本摘要演示</h4>
+        <textarea id="textInput" rows="4" class="w-full p-6 rounded-2xl border border-gray-200 dark:border-zinc-700 focus:outline-none focus:ring-4 focus:ring-indigo-300" placeholder="粘贴任意文字试试..."></textarea>
+        <button onclick="runSummarize()" class="mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-12 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:scale-105 transition w-full">生成摘要</button>
+        <div id="demoResult" class="mt-8 bg-white dark:bg-zinc-900 p-8 rounded-2xl min-h-[100px] text-lg"></div>
+      </div>
+
+      <!-- AI 提示词 Demo -->
+      <div class="mt-12 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10">
+        <h4 class="font-semibold text-xl mb-6 flex items-center gap-3"><i class="fas fa-sparkles text-violet-600"></i> AI提示词生成器</h4>
+        <input id="aiTopic" type="text" placeholder="输入主题，例如：Python 数据分析" class="w-full p-6 rounded-2xl border border-violet-200 focus:outline-none focus:ring-4 focus:ring-violet-300 text-lg">
+        <button onclick="generateAIPrompt()" class="mt-6 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-12 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:scale-105 transition w-full">生成专业提示词</button>
+        <div id="aiDemoResult" class="mt-8 bg-white dark:bg-zinc-900 p-8 rounded-2xl min-h-[120px] text-lg font-mono whitespace-pre-wrap"></div>
+      </div>
+
+      <div class="mt-12 text-center">
+        <button onclick="showTime()" class="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:scale-105 transition">
+          <i class="fas fa-clock"></i> 显示当前时间
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 自定义添加新技能 -->
+  <section id="builder" class="max-w-6xl mx-auto px-6 py-20 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900">
+    <h3 class="text-4xl font-bold text-center mb-12 flex items-center justify-center gap-3">✨ 自定义添加新技能</h3>
+    <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-10 max-w-3xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <input id="newName" placeholder="技能名称（如：网页爬取技能）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 text-lg">
+          <input id="newEmoji" placeholder="Emoji 图标（如 🕸️）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 text-3xl text-center" value="🚀">
+          <textarea id="newDesc" rows="3" placeholder="技能描述" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4"></textarea>
+          <input id="newFuncs" placeholder="函数列表（逗号分隔，如 resize_image,convert_format）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-6">
+          <button onclick="generateNewSkill()" class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-5 rounded-2xl font-bold text-xl shadow-xl hover:scale-105 transition">生成代码 + 提交到 GitHub</button>
+        </div>
+        <div id="resultBox" class="hidden">
+          <h4 class="font-semibold mb-4">已生成！复制后 push 即可</h4>
+          <div id="resultContent" class="space-y-6 text-sm"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-zinc-900 text-white py-12 text-center">
+    <p class="text-xl">SKIILs 已准备好被你的项目随时调用！</p>
+  </footer>
+
+  <script>
+    function runSummarize() {
+      const text = document.getElementById('textInput').value.trim();
+      if (!text) return alert('请先输入文字！');
+      const result = text.length > 50 ? text.slice(0, 50) + '...' : text;
+      document.getElementById('demoResult').innerHTML = `<strong>📋 SKIILs 摘要结果：</strong><br><span class="text-indigo-600">${result}</span>`;
+    }
+    function showTime() {
+      const now = new Date().toLocaleString('zh-CN');
+      alert(`🕒 SKIILs get_time() 返回：\n${now}`);
+    }
+    function generateAIPrompt() {
+      const topic = document.getElementById('aiTopic').value.trim();
+      if (!topic) return alert('请输入主题！');
+      const result = `你是一个世界级专家。请详细讲解「${topic}」...`;
+      document.getElementById('aiDemoResult').innerHTML = `<strong>🤖 SKIILs 生成的提示词：</strong><br><br>${result}<br><br><small class="text-violet-600">（真实调用：skiils.generate_prompt("${topic}")）</small>`;
+    }
+    function generateNewSkill() {
+      const name = document.getElementById('newName').value.trim();
+      const emoji = document.getElementById('newEmoji').value || '🔧';
+      const desc = document.getElementById('newDesc').value.trim();
+      const funcs = document.getElementById('newFuncs').value.split(',').map(f => f.trim()).filter(Boolean);
+      if (!name) return alert('请填写技能名称！');
+      const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+      const pyCode = `def ${id}_example(input_data):\n    """${name} - ${desc}"""\n    return f"✅ SKIILs 新技能 ${name} 执行成功！"`;
+      const initLine = `from .skills.${id} import ${id}_example`;
+      const resultHTML = `<div class="bg-zinc-900 p-6 rounded-2xl"><strong>1. 新建文件 src/skiils/skills/${id}.py</strong><br><pre class="mt-3 p-4 bg-black rounded-xl overflow-auto text-emerald-400">${pyCode}</pre></div><div class="bg-zinc-900 p-6 rounded-2xl"><strong>2. 在 __init__.py 添加</strong><br><pre class="mt-3 p-4 bg-black rounded-xl overflow-auto">${initLine}</pre></div><div class="flex gap-3 mt-6"><button onclick="copyToClipboard('${pyCode.replace(/'/g, "\\'")}')" class="flex-1 bg-emerald-600 text-white py-4 rounded-2xl font-semibold">复制 Python 代码</button><button onclick="submitIssue('${name}', '${emoji}')" class="flex-1 bg-black text-white py-4 rounded-2xl font-semibold">提交 Issue</button></div>`;
+      document.getElementById('resultContent').innerHTML = resultHTML;
+      document.getElementById('resultBox').classList.remove('hidden');
+    }
+    function copyToClipboard(text) { navigator.clipboard.writeText(text); alert('✅ 已复制！'); }
+    function submitIssue(name, emoji) {
+      const username = window.location.hostname.split('.')[0];
+      const title = encodeURIComponent(`新增技能：${name}`);
+      const body = encodeURIComponent(`**新技能请求**\nEmoji: ${emoji}\n请帮忙创建文件并更新 __init__.py`);
+      window.open(`https://github.com/${username}/SKIILs/issues/new?title=${title}&body=${body}&labels=new-skill`, '_blank');
+    }
+    tailwind.config = { content: ["*"] };
+  </script>
+</body>
+</html>
