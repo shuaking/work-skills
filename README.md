@@ -3,20 +3,20 @@
 **🚀 SKIILs - 模块化多技能工具库**  
 随时可被**任意其他项目**通过 pip 一键调用！
 
-[![GitHub Pages](https://img.shields.io/badge/访问官网-https%3A%2F%2F你的用户名.github.io%2FSKIILs-9f7aea?style=flat&logo=vercel)](https://你的用户名.github.io/SKIILs)
+[![GitHub Pages](https://img.shields.io/badge/访问官网-https%3A%2F%2Fshuaking.github.io%2FSKIILs-9f7aea?style=flat&logo=vercel)](https://shuaking.github.io/SKIILs)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## ✨ 特性
 - **随时调用**：一行 `pip install` 即可导入所有技能
-- **可视化官网**：https://你的用户名.github.io/SKIILs（带实时演示）
+- **可视化官网**：https://shuaking.github.io/SKIILs（带实时演示）
 - **页面自定义技能**：官网上填表单 → 自动生成代码 + 提交 Issue
 - **自动部署**：GitHub Actions 一键更新官网
 - **持续扩展**：已内置 8 个实用技能（数据/文本/AI/文件/工具）
 
 ## 🚀 快速安装（其他项目使用）
 ```bash
-pip install git+https://github.com/你的用户名/SKIILs.git
+pip install git+https://github.com/shuaking/SKIILs.git
 
 📖 使用示例
 from skiils import (

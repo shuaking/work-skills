@@ -21,7 +21,7 @@
         <span class="text-3xl">🚀</span>
         <h1 class="text-3xl font-bold text-indigo-600">SKIILs</h1>
       </div>
-      <a href="https://github.com/你的用户名/SKIILs" target="_blank" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-black">
+      <a id="githubLink" href="#" target="_blank" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-black">
         <i class="fab fa-github text-2xl"></i> GitHub
       </a>
     </div>
@@ -33,7 +33,7 @@
       <h2 class="text-6xl font-bold mb-6">SKIILs</h2>
       <p class="text-2xl mb-8">随时可被任意项目调用的多技能工具库</p>
       <div class="inline-flex items-center gap-4 bg-white/20 backdrop-blur-md px-10 py-5 rounded-3xl text-xl">
-        <code class="bg-black/30 px-6 py-3 rounded-2xl font-mono text-sm">pip install git+https://github.com/你的用户名/SKIILs.git</code>
+        <code id="installCommand" class="bg-black/30 px-6 py-3 rounded-2xl font-mono text-sm"></code>
       </div>
     </div>
   </header>
@@ -131,6 +131,10 @@
   </footer>
 
   <script>
+    // 配置常量
+    const GITHUB_USERNAME = 'shuaking';
+    const REPO_NAME = 'SKIILs';
+
     function runSummarize() {
       const text = document.getElementById('textInput').value.trim();
       if (!text) return alert('请先输入文字！');
@@ -158,11 +162,18 @@
     }
     function copyToClipboard(text) { navigator.clipboard.writeText(text); alert('✅ 已复制！'); }
     function submitIssue(name, emoji) {
-      const username = window.location.hostname.split('.')[0];
       const title = encodeURIComponent(`新增技能：${name}`);
       const body = encodeURIComponent(`**新技能请求**\nEmoji: ${emoji}\n请帮忙创建文件并更新 __init__.py`);
-      window.open(`https://github.com/${username}/SKIILs/issues/new?title=${title}&body=${body}&labels=new-skill`, '_blank');
+      window.open(`https://github.com/${GITHUB_USERNAME}/${REPO_NAME}/issues/new?title=${title}&body=${body}&labels=new-skill`, '_blank');
     }
+
+    // 页面加载时初始化动态内容
+    document.addEventListener('DOMContentLoaded', function() {
+      const repoUrl = `https://github.com/${GITHUB_USERNAME}/${REPO_NAME}`;
+      document.getElementById('githubLink').href = repoUrl;
+      document.getElementById('installCommand').textContent = `pip install git+${repoUrl}.git`;
+    });
+
     tailwind.config = { content: ["*"] };
   </script>
 </body>
