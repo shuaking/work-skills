@@ -22,32 +22,17 @@ jobs:
       - name: Checkout 仓库
         uses: actions/checkout@v4
 
-      - name: 🔧 确保 docs 文件夹存在（改进核心）
+      - name: 🔧 确保 docs 文件夹存在
         run: |
-          mkdir -p docs
-          echo "📁 docs 文件夹已确认存在"
-          ls -la docs/
-          if [ ! -f docs/index.html ]; then
-            echo "⚠️ 未找到 index.html → 自动生成兜底首页..."
-            cat > docs/index.html << 'EOL'
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SKIILs - 多技能工具库</title>
-  <style>body{font-family:system-ui,sans-serif;background:#111;color:#fff;text-align:center;padding:100px;}</style>
-</head>
-<body>
-  <h1>🚀 SKIILs 官网</h1>
-  <p>GitHub Pages 部署成功！</p>
-  <p>请检查本地 docs/index.html 是否已 push</p>
-  <p><a href="https://github.com/${{ github.repository }}" style="color:#6366f1;">返回 GitHub 仓库</a></p>
-</body>
-</html>
-EOL
+          if [ ! -d docs ]; then
+            echo "❌ docs 目录不存在"
+            exit 1
           fi
-          echo "✅ 最终 docs 目录结构："
+          if [ ! -f docs/index.html ]; then
+            echo "❌ docs/index.html 不存在"
+            exit 1
+          fi
+          echo "✅ docs 目录结构："
           ls -la docs/
 
       - name: Setup GitHub Pages
