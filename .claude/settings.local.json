@@ -3,7 +3,10 @@
     "allow": [
       "mcp__augment-context-engine__codebase-retrieval",
       "Bash(git mv:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh run:*)"
     ]
   }
 }
