@@ -109,18 +109,18 @@
   <!-- 自定义添加新技能 -->
   <section id="builder" class="max-w-6xl mx-auto px-6 py-20 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900">
     <h3 class="text-4xl font-bold text-center mb-12">✨ 自定义添加新技能</h3>
-    <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-10 max-w-3xl mx-auto">
+    <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-10 max-w-4xl mx-auto">
       <div class="grid md:grid-cols-2 gap-8">
         <div>
-          <input id="newName" placeholder="技能名称（如：网页爬取技能）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 text-lg">
-          <input id="newEmoji" placeholder="Emoji 图标（如 🕸️）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 text-3xl text-center" value="🚀">
-          <textarea id="newDesc" rows="3" placeholder="技能描述" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4"></textarea>
-          <input id="newFuncs" placeholder="函数列表（逗号分隔，如 resize_image,convert_format）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-6">
-          <button onclick="generateNewSkill()" class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-5 rounded-2xl font-bold text-xl shadow-xl hover:scale-105 transition">生成代码 + 提交到 GitHub</button>
+          <input id="skillId" placeholder="技能 ID（如：web-scraper）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 text-lg font-mono">
+          <textarea id="shortDesc" rows="2" placeholder="简短描述（一句话说明技能用途）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4"></textarea>
+          <textarea id="overview" rows="3" placeholder="详细概述（技能的详细说明）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4"></textarea>
+          <textarea id="usage" rows="3" placeholder="使用说明（如何使用这个技能）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4"></textarea>
+          <button onclick="generateNewSkill()" class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-5 rounded-2xl font-bold text-xl shadow-xl hover:scale-105 transition">生成 SKILL.md</button>
         </div>
         <div id="resultBox" class="hidden">
-          <h4 class="font-semibold mb-4">已生成！复制后 push 即可</h4>
-          <div id="resultContent" class="space-y-6 text-sm"></div>
+          <h4 class="font-semibold mb-4">✅ SKILL.md 已生成！</h4>
+          <div id="resultContent" class="space-y-4 text-sm"></div>
         </div>
       </div>
     </div>
@@ -148,22 +148,84 @@
       document.getElementById('aiDemoResult').innerHTML = `<strong>🤖 生成的提示词：</strong><br><br>${result}<br><br><small class="text-violet-600">（真实调用：generate_prompt("${topic}")）</small>`;
     }
     function generateNewSkill() {
-      const name = document.getElementById('newName').value.trim();
-      const emoji = document.getElementById('newEmoji').value || '🔧';
-      const desc = document.getElementById('newDesc').value.trim();
-      const funcs = document.getElementById('newFuncs').value.split(',').map(f => f.trim()).filter(Boolean);
-      if (!name) return alert('请填写技能名称！');
-      const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
-      const pyCode = `def ${id}_example(input_data):\n    """${name} - ${desc}"""\n    return f"✅ SKIILs 新技能 ${name} 执行成功！"`;
-      const initLine = `from .skills.${id} import ${id}_example`;
-      const resultHTML = `<div class="bg-zinc-900 p-6 rounded-2xl"><strong>1. 新建文件 src/skiils/skills/${id}.py</strong><br><pre class="mt-3 p-4 bg-black rounded-xl overflow-auto text-emerald-400">${pyCode}</pre></div><div class="bg-zinc-900 p-6 rounded-2xl"><strong>2. 在 __init__.py 添加</strong><br><pre class="mt-3 p-4 bg-black rounded-xl overflow-auto">${initLine}</pre></div><div class="flex gap-3 mt-6"><button onclick="copyToClipboard('${pyCode.replace(/'/g, "\\'")}')" class="flex-1 bg-emerald-600 text-white py-4 rounded-2xl font-semibold">复制 Python 代码</button><button onclick="submitIssue('${name}', '${emoji}')" class="flex-1 bg-black text-white py-4 rounded-2xl font-semibold">提交 Issue</button></div>`;
+      const skillId = document.getElementById('skillId').value.trim();
+      const shortDesc = document.getElementById('shortDesc').value.trim();
+      const overview = document.getElementById('overview').value.trim();
+      const usage = document.getElementById('usage').value.trim();
+
+      if (!skillId) return alert('请填写技能 ID！');
+      if (!shortDesc) return alert('请填写简短描述！');
+
+      // 生成 SKILL.md 内容
+      const skillMd = `---
+name: ${skillId}
+description: ${shortDesc}
+---
+
+# ${skillId}
+
+## Overview
+
+${overview || '这是一个新的技能，用于...'}
+
+## Usage
+
+${usage || '使用方法：\n\n1. 调用技能\n2. 提供必要的参数\n3. 获取结果'}
+
+## Examples
+
+\`\`\`
+示例代码或命令
+\`\`\`
+
+## Notes
+
+- 注意事项 1
+- 注意事项 2
+`;
+
+      const resultHTML = `
+        <div class="bg-zinc-900 p-6 rounded-2xl max-h-96 overflow-auto">
+          <pre class="text-emerald-400 text-xs whitespace-pre-wrap">${skillMd.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button onclick="copySkillMd()" class="flex-1 bg-emerald-600 text-white py-4 rounded-2xl font-semibold">📋 复制内容</button>
+          <button onclick="downloadSkillMd('${skillId}')" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-semibold">💾 下载文件</button>
+          <button onclick="submitSkillIssue('${skillId}')" class="flex-1 bg-black text-white py-4 rounded-2xl font-semibold">🚀 提交 Issue</button>
+        </div>
+      `;
+
+      // 保存到全局变量供复制和下载使用
+      window.currentSkillMd = skillMd;
+      window.currentSkillId = skillId;
+
       document.getElementById('resultContent').innerHTML = resultHTML;
       document.getElementById('resultBox').classList.remove('hidden');
     }
-    function copyToClipboard(text) { navigator.clipboard.writeText(text); alert('✅ 已复制！'); }
-    function submitIssue(name, emoji) {
-      const title = encodeURIComponent(`新增技能：${name}`);
-      const body = encodeURIComponent(`**新技能请求**\nEmoji: ${emoji}\n请帮忙创建文件并更新 __init__.py`);
+
+    function copySkillMd() {
+      if (!window.currentSkillMd) return;
+      navigator.clipboard.writeText(window.currentSkillMd);
+      alert('✅ SKILL.md 内容已复制到剪贴板！');
+    }
+
+    function downloadSkillMd(skillId) {
+      if (!window.currentSkillMd) return;
+      const blob = new Blob([window.currentSkillMd], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'SKILL.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert('✅ SKILL.md 文件已下载！');
+    }
+
+    function submitSkillIssue(skillId) {
+      const title = encodeURIComponent(`新增技能：${skillId}`);
+      const body = encodeURIComponent(`**新技能请求**\n\n技能 ID: ${skillId}\n\n请查看附件中的 SKILL.md 文件。\n\n---\n\n\`\`\`markdown\n${window.currentSkillMd}\n\`\`\``);
       window.open(`https://github.com/${GITHUB_USERNAME}/${REPO_NAME}/issues/new?title=${title}&body=${body}&labels=new-skill`, '_blank');
     }
 
