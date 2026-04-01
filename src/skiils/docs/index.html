@@ -42,7 +42,6 @@
   <section id="skills" class="max-w-6xl mx-auto px-6 py-20">
     <h3 class="text-4xl font-bold text-center mb-16">当前可用技能（已上线 8 个）</h3>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- 数据技能 -->
       <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-indigo-100">
         <div class="text-5xl mb-6">📊</div>
         <h4 class="text-2xl font-semibold mb-3">数据处理技能</h4>
@@ -51,7 +50,6 @@
           <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> calculate_stats</li>
         </ul>
       </div>
-      <!-- 文本技能 -->
       <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-purple-100">
         <div class="text-5xl mb-6">📝</div>
         <h4 class="text-2xl font-semibold mb-3">文本处理技能</h4>
@@ -60,7 +58,6 @@
           <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> summarize</li>
         </ul>
       </div>
-      <!-- 工具技能 -->
       <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-emerald-100">
         <div class="text-5xl mb-6">🛠️</div>
         <h4 class="text-2xl font-semibold mb-3">通用工具技能</h4>
@@ -69,7 +66,6 @@
           <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> hello_world</li>
         </ul>
       </div>
-      <!-- AI技能 -->
       <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-violet-100">
         <div class="text-5xl mb-6">🤖</div>
         <h4 class="text-2xl font-semibold mb-3 text-violet-600">AI 智能技能</h4>
@@ -78,7 +74,6 @@
           <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> simple_ai_chat</li>
         </ul>
       </div>
-      <!-- 文件技能 -->
       <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-amber-100">
         <div class="text-5xl mb-6">📁</div>
         <h4 class="text-2xl font-semibold mb-3 text-amber-600">文件操作技能</h4>
@@ -94,33 +89,26 @@
   <section id="demo" class="bg-white dark:bg-zinc-900 py-20">
     <div class="max-w-4xl mx-auto px-6">
       <h3 class="text-4xl font-bold text-center mb-12">在线实时演示</h3>
-      <!-- 文本摘要 Demo -->
-      <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10 shadow-inner">
+      <!-- 文本摘要 -->
+      <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10 mb-12">
         <h4 class="font-semibold text-xl mb-6 flex items-center gap-3"><i class="fas fa-magic"></i> 文本摘要演示</h4>
         <textarea id="textInput" rows="4" class="w-full p-6 rounded-2xl border border-gray-200 dark:border-zinc-700 focus:outline-none focus:ring-4 focus:ring-indigo-300" placeholder="粘贴任意文字试试..."></textarea>
         <button onclick="runSummarize()" class="mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-12 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:scale-105 transition w-full">生成摘要</button>
         <div id="demoResult" class="mt-8 bg-white dark:bg-zinc-900 p-8 rounded-2xl min-h-[100px] text-lg"></div>
       </div>
-
-      <!-- AI 提示词 Demo -->
-      <div class="mt-12 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10">
+      <!-- AI 提示词 -->
+      <div class="bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10">
         <h4 class="font-semibold text-xl mb-6 flex items-center gap-3"><i class="fas fa-sparkles text-violet-600"></i> AI提示词生成器</h4>
         <input id="aiTopic" type="text" placeholder="输入主题，例如：Python 数据分析" class="w-full p-6 rounded-2xl border border-violet-200 focus:outline-none focus:ring-4 focus:ring-violet-300 text-lg">
         <button onclick="generateAIPrompt()" class="mt-6 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-12 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:scale-105 transition w-full">生成专业提示词</button>
         <div id="aiDemoResult" class="mt-8 bg-white dark:bg-zinc-900 p-8 rounded-2xl min-h-[120px] text-lg font-mono whitespace-pre-wrap"></div>
-      </div>
-
-      <div class="mt-12 text-center">
-        <button onclick="showTime()" class="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:scale-105 transition">
-          <i class="fas fa-clock"></i> 显示当前时间
-        </button>
       </div>
     </div>
   </section>
 
   <!-- 自定义添加新技能 -->
   <section id="builder" class="max-w-6xl mx-auto px-6 py-20 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900">
-    <h3 class="text-4xl font-bold text-center mb-12 flex items-center justify-center gap-3">✨ 自定义添加新技能</h3>
+    <h3 class="text-4xl font-bold text-center mb-12">✨ 自定义添加新技能</h3>
     <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-10 max-w-3xl mx-auto">
       <div class="grid md:grid-cols-2 gap-8">
         <div>
@@ -147,17 +135,13 @@
       const text = document.getElementById('textInput').value.trim();
       if (!text) return alert('请先输入文字！');
       const result = text.length > 50 ? text.slice(0, 50) + '...' : text;
-      document.getElementById('demoResult').innerHTML = `<strong>📋 SKIILs 摘要结果：</strong><br><span class="text-indigo-600">${result}</span>`;
-    }
-    function showTime() {
-      const now = new Date().toLocaleString('zh-CN');
-      alert(`🕒 SKIILs get_time() 返回：\n${now}`);
+      document.getElementById('demoResult').innerHTML = `<strong>📋 摘要结果：</strong><br><span class="text-indigo-600">${result}</span>`;
     }
     function generateAIPrompt() {
       const topic = document.getElementById('aiTopic').value.trim();
       if (!topic) return alert('请输入主题！');
       const result = `你是一个世界级专家。请详细讲解「${topic}」...`;
-      document.getElementById('aiDemoResult').innerHTML = `<strong>🤖 SKIILs 生成的提示词：</strong><br><br>${result}<br><br><small class="text-violet-600">（真实调用：skiils.generate_prompt("${topic}")）</small>`;
+      document.getElementById('aiDemoResult').innerHTML = `<strong>🤖 生成的提示词：</strong><br><br>${result}<br><br><small class="text-violet-600">（真实调用：generate_prompt("${topic}")）</small>`;
     }
     function generateNewSkill() {
       const name = document.getElementById('newName').value.trim();
