@@ -6,52 +6,179 @@
   <title>SKIILs - 多技能工具库</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-bg: #0a0118;
+      --secondary-bg: #1e1b4b;
+      --accent-cyan: #00ffff;
+      --accent-magenta: #ff00ff;
+      --accent-yellow: #ffff00;
+      --glass-bg: rgba(30, 27, 75, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: system-ui, sans-serif;
+      font-family: 'Orbitron', system-ui, sans-serif;
+      background: var(--primary-bg);
+      color: #ffffff;
+      overflow-x: hidden;
       scroll-behavior: smooth;
     }
 
-    /* Hero 动画渐变 */
-    .hero {
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-      background-size: 200% 200%;
-      animation: gradientShift 8s ease infinite;
+    /* 粒子背景 Canvas */
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+    /* 扫描线效果 */
+    .scanline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 255, 0.03) 0px,
+        transparent 2px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+      animation: scan 8s linear infinite;
     }
 
-    /* 技能卡片增强 */
-    .skill-card {
+    @keyframes scan {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100px); }
+    }
+
+    /* 网格背景 */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 全息文字效果 */
+    .holographic {
+      background: linear-gradient(
+        90deg,
+        #00ffff 0%,
+        #ff00ff 25%,
+        #ffff00 50%,
+        #00ffff 75%,
+        #ff00ff 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: hologram 3s linear infinite;
+      text-shadow:
+        0 0 10px rgba(0, 255, 255, 0.5),
+        0 0 20px rgba(255, 0, 255, 0.3),
+        0 0 30px rgba(255, 255, 0, 0.2);
+    }
+
+    @keyframes hologram {
+      to { background-position: 200% center; }
+    }
+
+    /* 玻璃态卡片 */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      overflow: hidden;
+      z-index: 2;
     }
 
-    .skill-card::before {
+    .glass-card::before {
       content: '';
       position: absolute;
       top: 0;
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 255, 255, 0.2),
+        transparent
+      );
       transition: left 0.5s;
     }
 
-    .skill-card:hover::before {
+    .glass-card:hover::before {
       left: 100%;
     }
 
-    .skill-card:hover {
-      transform: translateY(-12px) scale(1.03);
-      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+    .glass-card:hover {
+      transform: translateY(-8px) rotateX(5deg);
+      border-color: rgba(0, 255, 255, 0.5);
+      box-shadow:
+        0 20px 60px rgba(0, 255, 255, 0.3),
+        0 0 40px rgba(255, 0, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
-    /* 滚动淡入动画 */
+    /* 霓虹按钮 */
+    .neon-btn {
+      position: relative;
+      background: transparent;
+      border: 2px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      text-shadow: 0 0 10px var(--accent-cyan);
+      box-shadow:
+        0 0 10px var(--accent-cyan),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .neon-btn:hover {
+      background: var(--accent-cyan);
+      color: var(--primary-bg);
+      text-shadow: none;
+      box-shadow:
+        0 0 20px var(--accent-cyan),
+        0 0 40px var(--accent-cyan),
+        inset 0 0 20px rgba(0, 255, 255, 0.5);
+      transform: scale(1.05);
+    }
+
+    /* 3D 透视容器 */
+    .perspective-container {
+      perspective: 1000px;
+    }
+
+    /* 滚动淡入 */
     .fade-in {
       opacity: 0;
       transform: translateY(30px);
@@ -68,17 +195,20 @@
       position: fixed;
       bottom: 30px;
       right: 30px;
-      background: #10b981;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
       color: white;
       padding: 16px 24px;
       border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      box-shadow:
+        0 10px 40px rgba(0, 255, 255, 0.5),
+        0 0 20px rgba(255, 0, 255, 0.3);
       display: flex;
       align-items: center;
       gap: 12px;
       z-index: 1000;
       animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
       opacity: 0;
+      font-size: 14px;
     }
 
     @keyframes slideIn {
@@ -91,28 +221,43 @@
       to { transform: translateX(400px); opacity: 0; }
     }
 
-    /* 按钮波纹效果 */
-    .btn-ripple {
-      position: relative;
-      overflow: hidden;
+    /* 输入框样式 */
+    input, textarea {
+      background: rgba(10, 1, 24, 0.5);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      color: #ffffff;
+      transition: all 0.3s ease;
     }
 
-    .btn-ripple::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.5);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      background: rgba(10, 1, 24, 0.8);
     }
 
-    .btn-ripple:active::after {
-      width: 300px;
-      height: 300px;
+    input::placeholder, textarea::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* 紧凑间距调整 */
+    .compact-section {
+      padding: 60px 24px;
+    }
+
+    .compact-title {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .compact-section {
+        padding: 40px 16px;
+      }
+      .compact-title {
+        font-size: 2rem;
+        margin-bottom: 30px;
+      }
     }
 
     /* 加载动画 */
@@ -120,9 +265,9 @@
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
+      border: 3px solid rgba(0, 255, 255, 0.3);
       border-radius: 50%;
-      border-top-color: white;
+      border-top-color: var(--accent-cyan);
       animation: spin 0.8s linear infinite;
     }
 
@@ -130,138 +275,153 @@
       to { transform: rotate(360deg); }
     }
 
-    /* 输入框焦点增强 */
-    input:focus, textarea:focus {
-      transform: scale(1.01);
-      transition: transform 0.2s ease;
+    /* 技能图标发光 */
+    .skill-icon {
+      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+      transition: filter 0.3s ease;
     }
 
-    /* 卡片脉冲动画 */
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.8; }
-    }
-
-    .pulse-animation {
-      animation: pulse 2s ease-in-out infinite;
+    .glass-card:hover .skill-icon {
+      filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
     }
   </style>
+
 </head>
-<body class="bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-gray-100">
+<body>
+  <!-- 粒子背景 -->
+  <canvas id="particles"></canvas>
+
+  <!-- 扫描线效果 -->
+  <div class="scanline"></div>
+
+  <!-- 网格背景 -->
+  <div class="grid-bg"></div>
+
   <!-- Navbar -->
-  <nav class="bg-white dark:bg-zinc-900 shadow-sm sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+  <nav class="glass-card sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <span class="text-3xl">🚀</span>
-        <h1 class="text-3xl font-bold text-indigo-600">SKIILs</h1>
+        <span class="text-3xl skill-icon">🚀</span>
+        <h1 class="text-2xl font-bold holographic">SKIILs</h1>
       </div>
-      <a id="githubLink" href="#" target="_blank" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-black">
-        <i class="fab fa-github text-2xl"></i> GitHub
+      <a id="githubLink" href="#" target="_blank" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+        <i class="fab fa-github text-xl"></i>
+        <span class="hidden sm:inline">GitHub</span>
       </a>
     </div>
   </nav>
 
   <!-- Hero -->
-  <header class="hero text-white py-24">
-    <div class="max-w-4xl mx-auto text-center px-6">
-      <h2 class="text-6xl font-bold mb-6">SKIILs</h2>
-      <p class="text-2xl mb-8">随时可被任意项目调用的多技能工具库</p>
-      <div class="inline-flex items-center gap-4 bg-white/20 backdrop-blur-md px-10 py-5 rounded-3xl text-xl">
-        <code id="installCommand" class="bg-black/30 px-6 py-3 rounded-2xl font-mono text-sm"></code>
+  <header class="compact-section text-center relative z-2">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-6xl md:text-7xl font-black mb-6 holographic">SKIILs</h2>
+      <p class="text-xl md:text-2xl mb-8 text-cyan-300">随时可被任意项目调用的多技能工具库</p>
+      <div class="inline-flex items-center gap-4 glass-card px-8 py-4 rounded-2xl">
+        <code id="installCommand" class="text-sm md:text-base font-mono text-cyan-400"></code>
       </div>
     </div>
   </header>
 
   <!-- Skills Grid -->
-  <section id="skills" class="max-w-6xl mx-auto px-6 py-20 fade-in">
-    <h3 class="text-4xl font-bold text-center mb-16">当前可用技能（已上线 8 个）</h3>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-indigo-100 dark:border-indigo-900">
-        <div class="text-5xl mb-6">📊</div>
-        <h4 class="text-2xl font-semibold mb-3">数据处理技能</h4>
-        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> clean_list</li>
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> calculate_stats</li>
-        </ul>
-      </div>
-      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-purple-100 dark:border-purple-900">
-        <div class="text-5xl mb-6">📝</div>
-        <h4 class="text-2xl font-semibold mb-3">文本处理技能</h4>
-        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> word_count</li>
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> summarize</li>
-        </ul>
-      </div>
-      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-emerald-100 dark:border-emerald-900">
-        <div class="text-5xl mb-6">🛠️</div>
-        <h4 class="text-2xl font-semibold mb-3">通用工具技能</h4>
-        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> get_time</li>
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> hello_world</li>
-        </ul>
-      </div>
-      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-violet-100 dark:border-violet-900">
-        <div class="text-5xl mb-6">🤖</div>
-        <h4 class="text-2xl font-semibold mb-3 text-violet-600">AI 智能技能</h4>
-        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> generate_prompt</li>
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> simple_ai_chat</li>
-        </ul>
-      </div>
-      <div class="skill-card bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-8 border border-amber-100 dark:border-amber-900">
-        <div class="text-5xl mb-6">📁</div>
-        <h4 class="text-2xl font-semibold mb-3 text-amber-600">文件操作技能</h4>
-        <ul class="space-y-3 text-gray-600 dark:text-gray-400">
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> list_files</li>
-          <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> save_to_file</li>
-        </ul>
+  <section id="skills" class="compact-section fade-in relative z-2">
+    <div class="max-w-7xl mx-auto px-6">
+      <h3 class="compact-title font-bold text-center holographic">当前可用技能（已上线 8 个）</h3>
+      <div class="perspective-container grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass-card rounded-2xl p-6 border-cyan-500/30">
+          <div class="text-4xl mb-4 skill-icon">📊</div>
+          <h4 class="text-xl font-semibold mb-3 text-cyan-300">数据处理技能</h4>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-400 text-xs"></i> clean_list</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-400 text-xs"></i> calculate_stats</li>
+          </ul>
+        </div>
+        <div class="glass-card rounded-2xl p-6 border-magenta-500/30">
+          <div class="text-4xl mb-4 skill-icon">📝</div>
+          <h4 class="text-xl font-semibold mb-3 text-magenta-300">文本处理技能</h4>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-magenta-400 text-xs"></i> word_count</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-magenta-400 text-xs"></i> summarize</li>
+          </ul>
+        </div>
+        <div class="glass-card rounded-2xl p-6 border-yellow-500/30">
+          <div class="text-4xl mb-4 skill-icon">🛠️</div>
+          <h4 class="text-xl font-semibold mb-3 text-yellow-300">通用工具技能</h4>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-yellow-400 text-xs"></i> get_time</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-yellow-400 text-xs"></i> hello_world</li>
+          </ul>
+        </div>
+        <div class="glass-card rounded-2xl p-6 border-purple-500/30">
+          <div class="text-4xl mb-4 skill-icon">🤖</div>
+          <h4 class="text-xl font-semibold mb-3 text-purple-300">AI 智能技能</h4>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-400 text-xs"></i> generate_prompt</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-400 text-xs"></i> simple_ai_chat</li>
+          </ul>
+        </div>
+        <div class="glass-card rounded-2xl p-6 border-orange-500/30">
+          <div class="text-4xl mb-4 skill-icon">📁</div>
+          <h4 class="text-xl font-semibold mb-3 text-orange-300">文件操作技能</h4>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-orange-400 text-xs"></i> list_files</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-orange-400 text-xs"></i> save_to_file</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Live Demo -->
-  <section id="demo" class="bg-white dark:bg-zinc-900 py-20 fade-in">
-    <div class="max-w-4xl mx-auto px-6">
-      <h3 class="text-4xl font-bold text-center mb-12">在线实时演示</h3>
+  <section id="demo" class="compact-section fade-in relative z-2">
+    <div class="max-w-5xl mx-auto px-6">
+      <h3 class="compact-title font-bold text-center holographic">在线实时演示</h3>
+
       <!-- 文本摘要 -->
-      <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10 mb-12 transition-all hover:shadow-2xl">
-        <h4 class="font-semibold text-xl mb-6 flex items-center gap-3"><i class="fas fa-magic"></i> 文本摘要演示</h4>
-        <textarea id="textInput" rows="4" class="w-full p-6 rounded-2xl border border-gray-200 dark:border-zinc-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-600 transition-all" placeholder="粘贴任意文字试试..."></textarea>
-        <button onclick="runSummarize()" class="btn-ripple mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-12 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all w-full">生成摘要</button>
-        <div id="demoResult" class="mt-8 bg-white dark:bg-zinc-900 p-8 rounded-2xl min-h-[100px] text-lg transition-all"></div>
+      <div class="glass-card rounded-2xl p-8 mb-8">
+        <h4 class="font-semibold text-lg mb-4 flex items-center gap-3 text-cyan-300">
+          <i class="fas fa-magic"></i> 文本摘要演示
+        </h4>
+        <textarea id="textInput" rows="3" class="w-full p-4 rounded-xl text-sm mb-4" placeholder="粘贴任意文字试试..."></textarea>
+        <button onclick="runSummarize()" class="neon-btn w-full py-3 rounded-xl font-semibold text-sm">生成摘要</button>
+        <div id="demoResult" class="mt-6 p-4 rounded-xl bg-black/30 min-h-[80px] text-sm"></div>
       </div>
+
       <!-- AI 提示词 -->
-      <div class="bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-10 transition-all hover:shadow-2xl">
-        <h4 class="font-semibold text-xl mb-6 flex items-center gap-3"><i class="fas fa-sparkles text-violet-600"></i> AI提示词生成器</h4>
-        <input id="aiTopic" type="text" placeholder="输入主题，例如：Python 数据分析" class="w-full p-6 rounded-2xl border border-violet-200 dark:border-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-600 text-lg transition-all">
-        <button onclick="generateAIPrompt()" class="btn-ripple mt-6 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-12 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all w-full">生成专业提示词</button>
-        <div id="aiDemoResult" class="mt-8 bg-white dark:bg-zinc-900 p-8 rounded-2xl min-h-[120px] text-lg font-mono whitespace-pre-wrap transition-all"></div>
+      <div class="glass-card rounded-2xl p-8">
+        <h4 class="font-semibold text-lg mb-4 flex items-center gap-3 text-magenta-300">
+          <i class="fas fa-sparkles"></i> AI提示词生成器
+        </h4>
+        <input id="aiTopic" type="text" placeholder="输入主题，例如：Python 数据分析" class="w-full p-4 rounded-xl text-sm mb-4">
+        <button onclick="generateAIPrompt()" class="neon-btn w-full py-3 rounded-xl font-semibold text-sm">生成专业提示词</button>
+        <div id="aiDemoResult" class="mt-6 p-4 rounded-xl bg-black/30 min-h-[100px] text-sm font-mono whitespace-pre-wrap"></div>
       </div>
     </div>
   </section>
 
   <!-- 自定义添加新技能 -->
-  <section id="builder" class="max-w-6xl mx-auto px-6 py-20 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-zinc-800 dark:to-zinc-900 fade-in">
-    <h3 class="text-4xl font-bold text-center mb-12">✨ 自定义添加新技能</h3>
-    <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-10 max-w-4xl mx-auto transition-all hover:shadow-3xl">
-      <div class="grid md:grid-cols-2 gap-8">
-        <div>
-          <input id="skillId" placeholder="技能 ID（如：web-scraper）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 text-lg font-mono focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-600 transition-all">
-          <textarea id="shortDesc" rows="2" placeholder="简短描述（一句话说明技能用途）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-600 transition-all"></textarea>
-          <textarea id="overview" rows="3" placeholder="详细概述（技能的详细说明）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-600 transition-all"></textarea>
-          <textarea id="usage" rows="3" placeholder="使用说明（如何使用这个技能）" class="w-full p-5 rounded-2xl border border-gray-200 dark:border-zinc-700 mb-4 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-600 transition-all"></textarea>
-          <button onclick="generateNewSkill()" class="btn-ripple w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white py-5 rounded-2xl font-bold text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all">生成 SKILL.md</button>
-        </div>
-        <div id="resultBox" class="hidden">
-          <h4 class="font-semibold mb-4 text-lg">✅ SKILL.md 已生成！</h4>
-          <div id="resultContent" class="space-y-4 text-sm"></div>
+  <section id="builder" class="compact-section fade-in relative z-2">
+    <div class="max-w-5xl mx-auto px-6">
+      <h3 class="compact-title font-bold text-center holographic">✨ 自定义添加新技能</h3>
+      <div class="glass-card rounded-2xl p-8">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <input id="skillId" placeholder="技能 ID（如：web-scraper）" class="w-full p-4 rounded-xl mb-4 text-sm font-mono">
+            <textarea id="shortDesc" rows="2" placeholder="简短描述（一句话说明技能用途）" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
+            <textarea id="overview" rows="2" placeholder="详细概述（技能的详细说明）" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
+            <textarea id="usage" rows="2" placeholder="使用说明（如何使用这个技能）" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
+            <button onclick="generateNewSkill()" class="neon-btn w-full py-4 rounded-xl font-bold text-base">生成 SKILL.md</button>
+          </div>
+          <div id="resultBox" class="hidden">
+            <h4 class="font-semibold mb-4 text-cyan-300">✅ SKILL.md 已生成！</h4>
+            <div id="resultContent" class="space-y-3 text-sm"></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <footer class="bg-zinc-900 text-white py-12 text-center">
-    <p class="text-xl">SKIILs 已准备好被你的项目随时调用！</p>
+  <footer class="compact-section text-center relative z-2 border-t border-cyan-500/20">
+    <p class="text-lg text-cyan-300">SKIILs 已准备好被你的项目随时调用！</p>
   </footer>
 
   <script>
@@ -269,11 +429,102 @@
     const GITHUB_USERNAME = 'shuaking';
     const REPO_NAME = 'work-skills';
 
-    // Toast 通知函数
+    // ========== 粒子背景动画 ==========
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationId;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.radius = Math.random() * 2 + 1;
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 255, 255, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const particleCount = Math.min(Math.floor((canvas.width * canvas.height) / 15000), 100);
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+
+      // 绘制连线
+      particles.forEach((p1, i) => {
+        particles.slice(i + 1).forEach(p2 => {
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(0, 255, 255, ${0.15 * (1 - distance / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        });
+      });
+
+      animationId = requestAnimationFrame(animateParticles);
+    }
+
+    // 初始化粒子系统
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initParticles();
+    });
+
+    // ========== Toast 通知函数 ==========
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
       toast.className = 'toast';
-      toast.style.background = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6';
+
+      const colors = {
+        success: 'linear-gradient(135deg, #00ffff, #00ff00)',
+        error: 'linear-gradient(135deg, #ff00ff, #ff0000)',
+        info: 'linear-gradient(135deg, #00ffff, #ff00ff)'
+      };
+
+      toast.style.background = colors[type] || colors.success;
       toast.innerHTML = `
         <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
         <span>${message}</span>
@@ -282,10 +533,10 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    // 滚动动画观察器
+    // ========== 滚动动画观察器 ==========
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
+      rootMargin: '0px 0px -50px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -296,7 +547,7 @@
       });
     }, observerOptions);
 
-    // 观察所有 fade-in 元素
+    // ========== 页面初始化 ==========
     document.addEventListener('DOMContentLoaded', function() {
       const repoUrl = `https://github.com/${GITHUB_USERNAME}/${REPO_NAME}`;
       document.getElementById('githubLink').href = repoUrl;
@@ -306,6 +557,7 @@
       document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     });
 
+    // ========== 演示功能 ==========
     function runSummarize() {
       const text = document.getElementById('textInput').value.trim();
       if (!text) {
@@ -313,7 +565,7 @@
         return;
       }
       const result = text.length > 50 ? text.slice(0, 50) + '...' : text;
-      document.getElementById('demoResult').innerHTML = `<strong>📋 摘要结果：</strong><br><span class="text-indigo-600 dark:text-indigo-400">${result}</span>`;
+      document.getElementById('demoResult').innerHTML = `<strong class="text-cyan-400">📋 摘要结果：</strong><br><span class="text-white">${result}</span>`;
       showToast('摘要生成成功！');
     }
 
@@ -324,7 +576,7 @@
         return;
       }
       const result = `你是一个世界级专家。请详细讲解「${topic}」...`;
-      document.getElementById('aiDemoResult').innerHTML = `<strong>🤖 生成的提示词：</strong><br><br>${result}<br><br><small class="text-violet-600 dark:text-violet-400">（真实调用：generate_prompt("${topic}")）</small>`;
+      document.getElementById('aiDemoResult').innerHTML = `<strong class="text-magenta-400">🤖 生成的提示词：</strong><br><br>${result}<br><br><small class="text-cyan-400">（真实调用：generate_prompt("${topic}")）</small>`;
       showToast('提示词生成成功！');
     }
     function generateNewSkill() {
@@ -371,13 +623,13 @@ ${usage || '使用方法：\n\n1. 调用技能\n2. 提供必要的参数\n3. 获
 `;
 
       const resultHTML = `
-        <div class="bg-zinc-900 p-6 rounded-2xl max-h-96 overflow-auto">
-          <pre class="text-emerald-400 text-xs whitespace-pre-wrap">${skillMd.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+        <div class="bg-black/50 p-4 rounded-xl max-h-80 overflow-auto border border-cyan-500/30">
+          <pre class="text-cyan-400 text-xs whitespace-pre-wrap">${skillMd.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
         </div>
-        <div class="flex gap-3 mt-6">
-          <button onclick="copySkillMd()" class="btn-ripple flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-2xl font-semibold transition-all hover:scale-105">📋 复制内容</button>
-          <button onclick="downloadSkillMd('${skillId}')" class="btn-ripple flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold transition-all hover:scale-105">💾 下载文件</button>
-          <button onclick="submitSkillIssue('${skillId}')" class="btn-ripple flex-1 bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-semibold transition-all hover:scale-105">🚀 提交 Issue</button>
+        <div class="flex gap-2 mt-4">
+          <button onclick="copySkillMd()" class="flex-1 bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/50 text-cyan-300 py-3 rounded-xl font-semibold text-xs transition-all">📋 复制</button>
+          <button onclick="downloadSkillMd('${skillId}')" class="flex-1 bg-magenta-600/20 hover:bg-magenta-600/40 border border-magenta-500/50 text-magenta-300 py-3 rounded-xl font-semibold text-xs transition-all">💾 下载</button>
+          <button onclick="submitSkillIssue('${skillId}')" class="flex-1 bg-yellow-600/20 hover:bg-yellow-600/40 border border-yellow-500/50 text-yellow-300 py-3 rounded-xl font-semibold text-xs transition-all">🚀 Issue</button>
         </div>
       `;
 
