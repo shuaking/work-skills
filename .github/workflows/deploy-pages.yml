@@ -4,7 +4,7 @@ name: Deploy SKIILs to GitHub Pages (v0.4.2 改进版)
 on:
   push:
     branches: [ main ]
-    paths: [ 'docs/**', '.github/workflows/deploy-pages.yml' ]
+    paths: [ 'docs/**', 'src/skiils/skills/**', 'scripts/**', '.github/workflows/deploy-pages.yml' ]
   workflow_dispatch:
 
 permissions:
@@ -34,6 +34,23 @@ jobs:
           fi
           echo "✅ docs 目录结构："
           ls -la docs/
+
+      - name: 🐍 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 🔄 生成技能元数据
+        run: |
+          echo "开始生成 skills.json..."
+          python scripts/generate_skills_json.py
+          if [ -f docs/skills.json ]; then
+            echo "✅ skills.json 生成成功"
+            cat docs/skills.json
+          else
+            echo "❌ skills.json 生成失败"
+            exit 1
+          fi
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5

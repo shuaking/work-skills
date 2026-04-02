@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""
+技能元数据提取脚本
+扫描 src/skiils/skills/*.py 文件，提取函数定义并生成 docs/skills.json
+"""
+import ast
+import json
+from pathlib import Path
+
+# 类别映射配置
+CATEGORY_MAP = {
+    "data.py": {
+        "category": "数据处理技能",
+        "icon": "📊",
+        "color": "cyan"
+    },
+    "text.py": {
+        "category": "文本处理技能",
+        "icon": "📝",
+        "color": "magenta"
+    },
+    "ai.py": {
+        "category": "AI 智能技能",
+        "icon": "🤖",
+        "color": "purple"
+    },
+    "file.py": {
+        "category": "文件操作技能",
+        "icon": "📁",
+        "color": "orange"
+    },
+    "utils.py": {
+        "category": "通用工具技能",
+        "icon": "🛠️",
+        "color": "yellow"
+    }
+}
+
+# 函数描述映射（用于没有 docstring 的情况）
+FUNCTION_DESCRIPTIONS = {
+    "clean_list": "去重去空",
+    "calculate_stats": "统计均值/总数",
+    "word_count": "字数统计",
+    "summarize": "智能摘要",
+    "generate_prompt": "专业提示词生成",
+    "simple_ai_chat": "模拟智能对话",
+    "list_files": "列出目录文件",
+    "save_to_file": "保存内容到文件",
+    "get_time": "当前时间",
+    "hello_world": "打招呼"
+}
+
+
+def extract_functions_from_file(file_path):
+    """从 Python 文件中提取函数定义"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            tree = ast.parse(f.read(), filename=str(file_path))
+
+        functions = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef):
+                # 跳过私有函数
+                if node.name.startswith('_'):
+                    continue
+
+                # 提取 docstring
+                docstring = ast.get_docstring(node)
+                description = docstring.split('\n')[0] if docstring else None
+
+                # 如果没有 docstring，使用预定义描述
+                if not description:
+                    description = FUNCTION_DESCRIPTIONS.get(node.name, "")
+
+                functions.append({
+                    "name": node.name,
+                    "description": description
+                })
+
+        return functions
+    except Exception as e:
+        print(f"[WARNING] Failed to parse {file_path}: {e}")
+        return []
+
+
+def generate_skills_json():
+    """生成技能 JSON 文件"""
+    project_root = Path(__file__).parent.parent
+    skills_dir = project_root / "src" / "skiils" / "skills"
+    output_file = project_root / "docs" / "skills.json"
+
+    if not skills_dir.exists():
+        print(f"[ERROR] Skills directory not found: {skills_dir}")
+        return False
+
+    # 收集所有技能
+    categories = {}
+
+    for py_file in skills_dir.glob("*.py"):
+        # 跳过 __init__.py 和非 Python 文件
+        if py_file.name.startswith("__"):
+            continue
+
+        # 获取类别信息
+        category_info = CATEGORY_MAP.get(py_file.name)
+        if not category_info:
+            print(f"[INFO] Skipping unmapped file: {py_file.name}")
+            continue
+
+        # 提取函数
+        functions = extract_functions_from_file(py_file)
+        if not functions:
+            continue
+
+        # 按类别分组
+        category_name = category_info["category"]
+        if category_name not in categories:
+            categories[category_name] = {
+                "category": category_name,
+                "icon": category_info["icon"],
+                "color": category_info["color"],
+                "skills": []
+            }
+
+        categories[category_name]["skills"].extend(functions)
+
+    # 转换为列表格式
+    skills_data = list(categories.values())
+
+    # 写入 JSON 文件
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(skills_data, f, ensure_ascii=False, indent=2)
+
+    # 统计信息
+    total_skills = sum(len(cat["skills"]) for cat in skills_data)
+    print(f"[SUCCESS] Generated {output_file}")
+    print(f"[INFO] Total: {len(skills_data)} categories, {total_skills} skills")
+
+    return True
+
+
+if __name__ == "__main__":
+    success = generate_skills_json()
+    exit(0 if success else 1)

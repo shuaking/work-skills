@@ -1,0 +1,77 @@
+[
+  {
+    "category": "AI 智能技能",
+    "icon": "🤖",
+    "color": "purple",
+    "skills": [
+      {
+        "name": "generate_prompt",
+        "description": "专业提示词生成"
+      },
+      {
+        "name": "simple_ai_chat",
+        "description": "模拟智能对话"
+      }
+    ]
+  },
+  {
+    "category": "数据处理技能",
+    "icon": "📊",
+    "color": "cyan",
+    "skills": [
+      {
+        "name": "clean_list",
+        "description": "去重去空"
+      },
+      {
+        "name": "calculate_stats",
+        "description": "统计均值/总数"
+      }
+    ]
+  },
+  {
+    "category": "文件操作技能",
+    "icon": "📁",
+    "color": "orange",
+    "skills": [
+      {
+        "name": "list_files",
+        "description": "列出目录文件"
+      },
+      {
+        "name": "save_to_file",
+        "description": "保存内容到文件"
+      }
+    ]
+  },
+  {
+    "category": "文本处理技能",
+    "icon": "📝",
+    "color": "magenta",
+    "skills": [
+      {
+        "name": "word_count",
+        "description": "字数统计"
+      },
+      {
+        "name": "summarize",
+        "description": "智能摘要"
+      }
+    ]
+  },
+  {
+    "category": "通用工具技能",
+    "icon": "🛠️",
+    "color": "yellow",
+    "skills": [
+      {
+        "name": "get_time",
+        "description": "当前时间"
+      },
+      {
+        "name": "hello_world",
+        "description": "打招呼"
+      }
+    ]
+  }
+]

@@ -331,47 +331,12 @@
   <!-- Skills Grid -->
   <section id="skills" class="compact-section fade-in relative z-2">
     <div class="max-w-7xl mx-auto px-6">
-      <h3 class="compact-title font-bold text-center holographic">当前可用技能（已上线 8 个）</h3>
-      <div class="perspective-container grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="glass-card rounded-2xl p-6 border-cyan-500/30">
-          <div class="text-4xl mb-4 skill-icon">📊</div>
-          <h4 class="text-xl font-semibold mb-3 text-cyan-300">数据处理技能</h4>
-          <ul class="space-y-2 text-sm text-gray-300">
-            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-400 text-xs"></i> clean_list</li>
-            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-400 text-xs"></i> calculate_stats</li>
-          </ul>
-        </div>
-        <div class="glass-card rounded-2xl p-6 border-magenta-500/30">
-          <div class="text-4xl mb-4 skill-icon">📝</div>
-          <h4 class="text-xl font-semibold mb-3 text-magenta-300">文本处理技能</h4>
-          <ul class="space-y-2 text-sm text-gray-300">
-            <li class="flex items-center gap-2"><i class="fas fa-check text-magenta-400 text-xs"></i> word_count</li>
-            <li class="flex items-center gap-2"><i class="fas fa-check text-magenta-400 text-xs"></i> summarize</li>
-          </ul>
-        </div>
-        <div class="glass-card rounded-2xl p-6 border-yellow-500/30">
-          <div class="text-4xl mb-4 skill-icon">🛠️</div>
-          <h4 class="text-xl font-semibold mb-3 text-yellow-300">通用工具技能</h4>
-          <ul class="space-y-2 text-sm text-gray-300">
-            <li class="flex items-center gap-2"><i class="fas fa-check text-yellow-400 text-xs"></i> get_time</li>
-            <li class="flex items-center gap-2"><i class="fas fa-check text-yellow-400 text-xs"></i> hello_world</li>
-          </ul>
-        </div>
-        <div class="glass-card rounded-2xl p-6 border-purple-500/30">
-          <div class="text-4xl mb-4 skill-icon">🤖</div>
-          <h4 class="text-xl font-semibold mb-3 text-purple-300">AI 智能技能</h4>
-          <ul class="space-y-2 text-sm text-gray-300">
-            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-400 text-xs"></i> generate_prompt</li>
-            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-400 text-xs"></i> simple_ai_chat</li>
-          </ul>
-        </div>
-        <div class="glass-card rounded-2xl p-6 border-orange-500/30">
-          <div class="text-4xl mb-4 skill-icon">📁</div>
-          <h4 class="text-xl font-semibold mb-3 text-orange-300">文件操作技能</h4>
-          <ul class="space-y-2 text-sm text-gray-300">
-            <li class="flex items-center gap-2"><i class="fas fa-check text-orange-400 text-xs"></i> list_files</li>
-            <li class="flex items-center gap-2"><i class="fas fa-check text-orange-400 text-xs"></i> save_to_file</li>
-          </ul>
+      <h3 id="skillsTitle" class="compact-title font-bold text-center holographic">当前可用技能（加载中...）</h3>
+      <div id="skillsContainer" class="perspective-container grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 动态加载的技能卡片将在这里渲染 -->
+        <div class="col-span-full text-center text-cyan-400">
+          <div class="loading inline-block"></div>
+          <p class="mt-4">正在加载技能数据...</p>
         </div>
       </div>
     </div>
@@ -990,11 +955,68 @@
       });
     }, observerOptions);
 
+    // ========== 动态加载技能 ==========
+    async function loadSkills() {
+      const container = document.getElementById('skillsContainer');
+      const title = document.getElementById('skillsTitle');
+
+      try {
+        const response = await fetch('skills.json');
+        if (!response.ok) throw new Error('Failed to load skills.json');
+
+        const skillsData = await response.json();
+        const totalSkills = skillsData.reduce((sum, cat) => sum + cat.skills.length, 0);
+
+        // 更新标题
+        title.textContent = `当前可用技能（已上线 ${totalSkills} 个）`;
+
+        // 清空容器
+        container.innerHTML = '';
+
+        // 渲染技能卡片
+        skillsData.forEach(category => {
+          const card = document.createElement('div');
+          card.className = `glass-card rounded-2xl p-6 border-${category.color}-500/30`;
+
+          const skillsList = category.skills.map(skill =>
+            `<li class="flex items-center gap-2">
+              <i class="fas fa-check text-${category.color}-400 text-xs"></i>
+              ${skill.name}
+            </li>`
+          ).join('');
+
+          card.innerHTML = `
+            <div class="text-4xl mb-4 skill-icon">${category.icon}</div>
+            <h4 class="text-xl font-semibold mb-3 text-${category.color}-300">${category.category}</h4>
+            <ul class="space-y-2 text-sm text-gray-300">
+              ${skillsList}
+            </ul>
+          `;
+
+          container.appendChild(card);
+        });
+
+        showToast('技能数据加载成功！');
+      } catch (error) {
+        console.error('Load skills error:', error);
+        container.innerHTML = `
+          <div class="col-span-full text-center text-red-400">
+            <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+            <p>加载技能数据失败，请刷新页面重试</p>
+          </div>
+        `;
+        showToast('加载技能数据失败', 'error');
+      }
+    }
+
     // ========== 页面初始化 ==========
     document.addEventListener('DOMContentLoaded', function() {
       const repoUrl = `https://github.com/${GITHUB_USERNAME}/${REPO_NAME}`;
       document.getElementById('githubLink').href = repoUrl;
       document.getElementById('installCommand').textContent = `pip install git+${repoUrl}.git`;
+
+      // 加载技能数据
+      loadSkills();
 
       // 启动滚动动画
       document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
