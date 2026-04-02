@@ -16,7 +16,8 @@
       "Bash(curl -s \"https://shuaking.github.io/work-skills/skills.json\")",
       "Bash(curl -s \"https://api.github.com/repos/shuaking/work-skills/actions/runs?per_page=3\")",
       "Bash(curl -s \"https://shuaking.github.io/work-skills/\")",
-      "Bash(curl -I \"https://shuaking.github.io/work-skills/skills.json\")"
+      "Bash(curl -I \"https://shuaking.github.io/work-skills/skills.json\")",
+      "Bash(grep -v \"^\\\\.$\")"
     ]
   }
 }
