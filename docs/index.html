@@ -996,7 +996,8 @@
           container.appendChild(card);
         });
 
-        showToast('技能数据加载成功！');
+        // 移除成功提示，因为用户可以直接看到卡片已加载
+        // showToast('技能数据加载成功！');
       } catch (error) {
         console.error('Load skills error:', error);
         container.innerHTML = `
