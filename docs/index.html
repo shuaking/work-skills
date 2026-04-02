@@ -398,6 +398,28 @@
     </div>
   </section>
 
+  <!-- 技能详情模态框 -->
+  <div id="skillDetailsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+      <!-- 关闭按钮 -->
+      <button onclick="closeSkillDetails()" class="absolute top-4 right-4 text-cyan-400 hover:text-cyan-300 text-2xl">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <!-- 标题 -->
+      <div class="flex items-center gap-4 mb-6">
+        <div id="skillDetailsIcon" class="text-5xl"></div>
+        <div>
+          <h2 id="skillDetailsCategory" class="text-2xl font-bold holographic"></h2>
+          <p id="skillDetailsCount" class="text-sm text-gray-400 mt-1"></p>
+        </div>
+      </div>
+
+      <!-- 技能列表 -->
+      <div id="skillDetailsList" class="space-y-4"></div>
+    </div>
+  </div>
+
   <footer class="compact-section text-center relative z-2 border-t border-cyan-500/20">
     <p class="text-lg text-cyan-300">SKIILs 已准备好被你的项目随时调用！</p>
   </footer>
@@ -983,7 +1005,7 @@
         // 渲染技能卡片
         skillsData.forEach(category => {
           const card = document.createElement('div');
-          card.className = `glass-card rounded-2xl p-6 border-${category.color}-500/30`;
+          card.className = `glass-card rounded-2xl p-6 border-${category.color}-500/30 cursor-pointer hover:scale-105 transition-transform`;
 
           const skillsList = category.skills.map(skill =>
             `<li class="flex items-center gap-2">
@@ -999,6 +1021,11 @@
               ${skillsList}
             </ul>
           `;
+
+          // 添加点击事件显示详情
+          card.addEventListener('click', () => {
+            showSkillDetails(category);
+          });
 
           container.appendChild(card);
         });
@@ -1016,6 +1043,48 @@
         showToast('加载技能数据失败', 'error');
       }
     }
+
+    // ========== 技能详情弹窗 ==========
+    function showSkillDetails(category) {
+      const modal = document.getElementById('skillDetailsModal');
+      const icon = document.getElementById('skillDetailsIcon');
+      const categoryName = document.getElementById('skillDetailsCategory');
+      const count = document.getElementById('skillDetailsCount');
+      const list = document.getElementById('skillDetailsList');
+
+      // 设置标题信息
+      icon.textContent = category.icon;
+      categoryName.textContent = category.category;
+      count.textContent = `共 ${category.skills.length} 个技能`;
+
+      // 渲染技能列表
+      list.innerHTML = category.skills.map(skill => `
+        <div class="glass-card rounded-xl p-4 border-${category.color}-500/20">
+          <h3 class="text-lg font-semibold text-${category.color}-300 mb-2">
+            <i class="fas fa-code text-sm mr-2"></i>${skill.name}
+          </h3>
+          <p class="text-sm text-gray-300">${skill.description}</p>
+        </div>
+      `).join('');
+
+      // 显示模态框
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeSkillDetails() {
+      const modal = document.getElementById('skillDetailsModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // 点击模态框外部关闭
+    document.addEventListener('click', (e) => {
+      const modal = document.getElementById('skillDetailsModal');
+      if (e.target === modal) {
+        closeSkillDetails();
+      }
+    });
 
     // ========== 页面初始化 ==========
     document.addEventListener('DOMContentLoaded', function() {
