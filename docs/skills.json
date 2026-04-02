@@ -1,5 +1,20 @@
 [
   {
+    "category": "扩展技能",
+    "icon": "🎨",
+    "color": "indigo",
+    "skills": [
+      {
+        "name": "tim-mediastorm",
+        "description": "以影视飓风创始人Tim（潘天鸿）的写作风格撰写文章或文案。 仅在用户明确要求使用 Tim 风格、影视飓风风格撰写内容时触发。 适用场景：(1) 公众号文章，(2) 视频文案/脚本，(3) 演讲稿， (..."
+      },
+      {
+        "name": "画图",
+        "description": "画图"
+      }
+    ]
+  },
+  {
     "category": "AI 智能技能",
     "icon": "🤖",
     "color": "purple",
@@ -71,17 +86,6 @@
       {
         "name": "hello_world",
         "description": "打招呼"
-      }
-    ]
-  },
-  {
-    "category": "扩展技能",
-    "icon": "🎨",
-    "color": "indigo",
-    "skills": [
-      {
-        "name": "画图",
-        "description": "画图"
       }
     ]
   }

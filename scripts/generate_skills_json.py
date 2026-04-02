@@ -58,6 +58,46 @@ FUNCTION_DESCRIPTIONS = {
 }
 
 
+def extract_metadata_from_skill_folder(folder_path):
+    """从技能文件夹中提取元数据（读取 SKILL.md）"""
+    skill_md = folder_path / "SKILL.md"
+
+    if not skill_md.exists():
+        return None
+
+    try:
+        with open(skill_md, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # 解析 frontmatter
+        frontmatter_match = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+        if not frontmatter_match:
+            return None
+
+        frontmatter = frontmatter_match.group(1)
+
+        # 提取 description（支持多行）
+        desc_match = re.search(r'description:\s*>?\s*\n?(.*?)(?=\n\w+:|$)', frontmatter, re.DOTALL)
+
+        if desc_match:
+            description = desc_match.group(1).strip()
+            # 清理多行描述中的换行和多余空格
+            description = ' '.join(line.strip() for line in description.split('\n') if line.strip())
+
+            # 使用文件夹名作为技能名
+            skill_name = folder_path.name
+
+            return {
+                "name": skill_name,
+                "description": description[:100] + "..." if len(description) > 100 else description
+            }
+
+        return None
+    except Exception as e:
+        print(f"[WARNING] Failed to parse {skill_md}: {e}")
+        return None
+
+
 def extract_metadata_from_md(file_path):
     """从 Markdown 文件中提取技能元数据"""
     try:
@@ -134,8 +174,30 @@ def generate_skills_json():
 
     # 收集所有技能
     categories = {}
+    processed_items = set()  # 记录已处理的项目，避免重复
 
-    # 处理 Python 文件
+    # 优先级 1: 处理文件夹（技能包）
+    for item in skills_dir.iterdir():
+        if item.is_dir() and not item.name.startswith('__'):
+            metadata = extract_metadata_from_skill_folder(item)
+            if metadata:
+                # 使用默认的扩展技能分类
+                category_info = CATEGORY_MAP["default_md"]
+                category_name = category_info["category"]
+
+                if category_name not in categories:
+                    categories[category_name] = {
+                        "category": category_name,
+                        "icon": category_info["icon"],
+                        "color": category_info["color"],
+                        "skills": []
+                    }
+
+                categories[category_name]["skills"].append(metadata)
+                processed_items.add(item.name)
+                print(f"[INFO] Processed folder skill: {item.name}")
+
+    # 优先级 2: 处理 Python 文件
     for py_file in skills_dir.glob("*.py"):
         # 跳过 __init__.py
         if py_file.name.startswith("__"):
@@ -163,9 +225,14 @@ def generate_skills_json():
             }
 
         categories[category_name]["skills"].extend(functions)
+        processed_items.add(py_file.stem)
 
-    # 处理 Markdown 文件
+    # 优先级 3: 处理独立 Markdown 文件
     for md_file in skills_dir.glob("*.md"):
+        # 跳过已处理的文件夹中的文件
+        if md_file.stem in processed_items:
+            continue
+
         metadata = extract_metadata_from_md(md_file)
         if not metadata:
             continue
@@ -183,6 +250,7 @@ def generate_skills_json():
             }
 
         categories[category_name]["skills"].append(metadata)
+        processed_items.add(md_file.stem)
 
     # 转换为列表格式
     skills_data = list(categories.values())
