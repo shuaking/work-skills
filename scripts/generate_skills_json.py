@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
 技能元数据提取脚本
-扫描 src/skiils/skills/*.py 文件，提取函数定义并生成 docs/skills.json
+扫描 src/skiils/skills/*.py 和 *.md 文件，提取技能定义并生成 docs/skills.json
 """
 import ast
 import json
+import re
 from pathlib import Path
 
 # 类别映射配置
@@ -33,6 +34,12 @@ CATEGORY_MAP = {
         "category": "通用工具技能",
         "icon": "🛠️",
         "color": "yellow"
+    },
+    # Markdown 技能文档默认分类
+    "default_md": {
+        "category": "扩展技能",
+        "icon": "🎨",
+        "color": "indigo"
     }
 }
 
@@ -49,6 +56,38 @@ FUNCTION_DESCRIPTIONS = {
     "get_time": "当前时间",
     "hello_world": "打招呼"
 }
+
+
+def extract_metadata_from_md(file_path):
+    """从 Markdown 文件中提取技能元数据"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # 解析 frontmatter
+        frontmatter_match = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+        if not frontmatter_match:
+            return None
+
+        frontmatter = frontmatter_match.group(1)
+
+        # 提取 name 和 description
+        name_match = re.search(r'name:\s*(.+)', frontmatter)
+        desc_match = re.search(r'description:\s*(.+)', frontmatter)
+
+        if name_match:
+            name = name_match.group(1).strip()
+            description = desc_match.group(1).strip() if desc_match else name
+
+            return {
+                "name": name,
+                "description": description
+            }
+
+        return None
+    except Exception as e:
+        print(f"[WARNING] Failed to parse {file_path}: {e}")
+        return None
 
 
 def extract_functions_from_file(file_path):
@@ -96,8 +135,9 @@ def generate_skills_json():
     # 收集所有技能
     categories = {}
 
+    # 处理 Python 文件
     for py_file in skills_dir.glob("*.py"):
-        # 跳过 __init__.py 和非 Python 文件
+        # 跳过 __init__.py
         if py_file.name.startswith("__"):
             continue
 
@@ -123,6 +163,26 @@ def generate_skills_json():
             }
 
         categories[category_name]["skills"].extend(functions)
+
+    # 处理 Markdown 文件
+    for md_file in skills_dir.glob("*.md"):
+        metadata = extract_metadata_from_md(md_file)
+        if not metadata:
+            continue
+
+        # 使用默认的扩展技能分类
+        category_info = CATEGORY_MAP["default_md"]
+        category_name = category_info["category"]
+
+        if category_name not in categories:
+            categories[category_name] = {
+                "category": category_name,
+                "icon": category_info["icon"],
+                "color": category_info["color"],
+                "skills": []
+            }
+
+        categories[category_name]["skills"].append(metadata)
 
     # 转换为列表格式
     skills_data = list(categories.values())

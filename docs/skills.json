@@ -73,5 +73,16 @@
         "description": "打招呼"
       }
     ]
+  },
+  {
+    "category": "扩展技能",
+    "icon": "🎨",
+    "color": "indigo",
+    "skills": [
+      {
+        "name": "画图",
+        "description": "画图"
+      }
+    ]
   }
 ]
