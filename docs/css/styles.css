@@ -1,0 +1,281 @@
+:root {
+  --primary-bg: #0a0118;
+  --secondary-bg: #1e1b4b;
+  --accent-cyan: #00ffff;
+  --accent-magenta: #ff00ff;
+  --accent-yellow: #ffff00;
+  --glass-bg: rgba(30, 27, 75, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  background: var(--primary-bg);
+  color: #ffffff;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* 粒子背景 Canvas */
+#particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 扫描线效果 */
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 255, 0.03) 0px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100px); }
+}
+
+/* 网格背景 */
+.grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 全息文字效果 */
+.holographic {
+  background: linear-gradient(
+    90deg,
+    #00ffff 0%,
+    #ff00ff 25%,
+    #ffff00 50%,
+    #00ffff 75%,
+    #ff00ff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: hologram 3s linear infinite;
+  text-shadow:
+    0 0 10px rgba(0, 255, 255, 0.5),
+    0 0 20px rgba(255, 0, 255, 0.3),
+    0 0 30px rgba(255, 255, 0, 0.2);
+}
+
+@keyframes hologram {
+  to { background-position: 200% center; }
+}
+
+/* 玻璃态卡片 */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.glass-card:hover::before {
+  left: 100%;
+}
+
+.glass-card:hover {
+  transform: translateY(-8px) rotateX(5deg);
+  border-color: rgba(0, 255, 255, 0.5);
+  box-shadow:
+    0 20px 60px rgba(0, 255, 255, 0.3),
+    0 0 40px rgba(255, 0, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 霓虹按钮 */
+.neon-btn {
+  position: relative;
+  background: transparent;
+  border: 2px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  text-shadow: 0 0 10px var(--accent-cyan);
+  box-shadow:
+    0 0 10px var(--accent-cyan),
+    inset 0 0 10px rgba(0, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.neon-btn:hover {
+  background: var(--accent-cyan);
+  color: var(--primary-bg);
+  text-shadow: none;
+  box-shadow:
+    0 0 20px var(--accent-cyan),
+    0 0 40px var(--accent-cyan),
+    inset 0 0 20px rgba(0, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* 3D 透视容器 */
+.perspective-container {
+  perspective: 1000px;
+}
+
+/* 滚动淡入 */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Toast 通知 */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow:
+    0 10px 40px rgba(0, 255, 255, 0.5),
+    0 0 20px rgba(255, 0, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+  opacity: 0;
+  font-size: 14px;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(400px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(400px); opacity: 0; }
+}
+
+/* 输入框样式 */
+input, textarea, select {
+  background: rgba(10, 1, 24, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  background: rgba(10, 1, 24, 0.9);
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 下拉框选项样式 */
+select option {
+  background: rgba(10, 1, 24, 0.95);
+  color: #ffffff;
+  padding: 8px;
+}
+
+/* 紧凑间距调整 */
+.compact-section {
+  padding: 60px 24px;
+}
+
+.compact-title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .compact-section {
+    padding: 40px 16px;
+  }
+  .compact-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+}
+
+/* 加载动画 */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--accent-cyan);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 技能图标发光 */
+.skill-icon {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+  transition: filter 0.3s ease;
+}
+
+.glass-card:hover .skill-icon {
+  filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+}
