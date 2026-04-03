@@ -1,7 +1,8 @@
 :root {
   --primary-bg: #0a0118;
   --secondary-bg: #1e1b4b;
-  --accent-cyan: #00ffff;
+  --accent-cyan: #22d3ee; /* 改为 cyan-400 以提升对比度 */
+  --accent-cyan-light: #67e8f9; /* 新增更亮的青色用于文字 */
   --accent-magenta: #ff00ff;
   --accent-yellow: #ffff00;
   --glass-bg: rgba(30, 27, 75, 0.3);
@@ -225,7 +226,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 input::placeholder, textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6); /* 提升对比度从 0.4 到 0.6 */
 }
 
 /* 下拉框选项样式 */

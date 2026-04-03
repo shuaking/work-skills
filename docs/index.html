@@ -10,9 +10,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/accessibility.css">
 
 </head>
 <body>
+  <!-- 跳转链接（键盘导航） -->
+  <a href="#skills" class="skip-link">跳转到主要内容</a>
+
   <!-- 粒子背景 -->
   <canvas id="particles"></canvas>
 
@@ -23,25 +27,27 @@
   <div class="grid-bg"></div>
 
   <!-- Navbar -->
-  <nav class="glass-card sticky top-0 z-50 backdrop-blur-md">
+  <nav class="glass-card sticky top-0 z-50 backdrop-blur-md" role="navigation" aria-label="主导航">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <span class="text-3xl skill-icon">🚀</span>
+        <span class="text-3xl skill-icon" aria-hidden="true">🚀</span>
         <h1 class="text-2xl font-bold holographic">SKIILs</h1>
       </div>
       <div class="flex items-center gap-4">
-        <button onclick="openSettings()" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
-          <i class="fas fa-cog text-xl"></i>
+        <button onclick="openSettings()" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors" aria-label="打开设置">
+          <i class="fas fa-cog text-xl" aria-hidden="true"></i>
           <span class="hidden sm:inline">设置</span>
         </button>
-        <a id="githubLink" href="#" target="_blank" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
-          <i class="fab fa-github text-xl"></i>
+        <a id="githubLink" href="#" target="_blank" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors" aria-label="访问 GitHub 仓库">
+          <i class="fab fa-github text-xl" aria-hidden="true"></i>
           <span class="hidden sm:inline">GitHub</span>
         </a>
       </div>
     </div>
   </nav>
 
+  <!-- 主要内容 -->
+  <main>
   <!-- Hero -->
   <header class="compact-section text-center relative z-2">
     <div class="max-w-5xl mx-auto px-6">
@@ -57,10 +63,10 @@
   <section id="skills" class="compact-section fade-in relative z-2">
     <div class="max-w-7xl mx-auto px-6">
       <h3 id="skillsTitle" class="compact-title font-bold text-center holographic">当前可用技能（加载中...）</h3>
-      <div id="skillsContainer" class="perspective-container grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="skillsContainer" class="perspective-container grid md:grid-cols-2 lg:grid-cols-3 gap-6" role="region" aria-live="polite" aria-busy="true">
         <!-- 动态加载的技能卡片将在这里渲染 -->
         <div class="col-span-full text-center text-cyan-400">
-          <div class="loading inline-block"></div>
+          <div class="loading inline-block" role="status" aria-label="加载中"></div>
           <p class="mt-4">正在加载技能数据...</p>
         </div>
       </div>
@@ -74,22 +80,24 @@
 
       <!-- 文本摘要 -->
       <div class="glass-card rounded-2xl p-8 mb-8">
-        <h4 class="font-semibold text-lg mb-4 flex items-center gap-3 text-cyan-300">
-          <i class="fas fa-magic"></i> 文本摘要演示
+        <h4 id="textSummaryTitle" class="font-semibold text-lg mb-4 flex items-center gap-3 text-cyan-300">
+          <i class="fas fa-magic" aria-hidden="true"></i> 文本摘要演示
         </h4>
-        <textarea id="textInput" rows="3" class="w-full p-4 rounded-xl text-sm mb-4" placeholder="粘贴任意文字试试..."></textarea>
+        <label for="textInput" class="sr-only">输入要摘要的文本</label>
+        <textarea id="textInput" rows="3" class="w-full p-4 rounded-xl text-sm mb-4" placeholder="粘贴任意文字试试..." aria-labelledby="textSummaryTitle"></textarea>
         <button onclick="runSummarize()" class="neon-btn w-full py-3 rounded-xl font-semibold text-sm">生成摘要</button>
-        <div id="demoResult" class="mt-6 p-4 rounded-xl bg-black/30 min-h-[80px] text-sm"></div>
+        <div id="demoResult" class="mt-6 p-4 rounded-xl bg-black/30 min-h-[80px] text-sm" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>
 
       <!-- AI 提示词 -->
       <div class="glass-card rounded-2xl p-8">
-        <h4 class="font-semibold text-lg mb-4 flex items-center gap-3 text-magenta-300">
-          <i class="fas fa-sparkles"></i> AI提示词生成器
+        <h4 id="aiPromptTitle" class="font-semibold text-lg mb-4 flex items-center gap-3 text-magenta-300">
+          <i class="fas fa-sparkles" aria-hidden="true"></i> AI提示词生成器
         </h4>
-        <input id="aiTopic" type="text" placeholder="输入主题，例如：Python 数据分析" class="w-full p-4 rounded-xl text-sm mb-4">
+        <label for="aiTopic" class="sr-only">输入主题</label>
+        <input id="aiTopic" type="text" placeholder="输入主题，例如：Python 数据分析" class="w-full p-4 rounded-xl text-sm mb-4" aria-labelledby="aiPromptTitle">
         <button onclick="generateAIPrompt()" class="neon-btn w-full py-3 rounded-xl font-semibold text-sm">生成专业提示词</button>
-        <div id="aiDemoResult" class="mt-6 p-4 rounded-xl bg-black/30 min-h-[100px] text-sm font-mono whitespace-pre-wrap"></div>
+        <div id="aiDemoResult" class="mt-6 p-4 rounded-xl bg-black/30 min-h-[100px] text-sm font-mono whitespace-pre-wrap" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>
     </div>
   </section>
@@ -101,10 +109,14 @@
       <div class="glass-card rounded-2xl p-8">
         <div class="grid md:grid-cols-2 gap-6">
           <div>
-            <input id="skillId" placeholder="技能 ID（如：web-scraper）" class="w-full p-4 rounded-xl mb-4 text-sm font-mono">
-            <textarea id="shortDesc" rows="2" placeholder="简短描述（一句话说明技能用途）" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
-            <textarea id="overview" rows="2" placeholder="详细概述（技能的详细说明）" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
-            <textarea id="usage" rows="2" placeholder="使用说明（如何使用这个技能）" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
+            <label for="skillId" class="block text-sm text-gray-300 mb-2">技能 ID</label>
+            <input id="skillId" placeholder="如：web-scraper" class="w-full p-4 rounded-xl mb-4 text-sm font-mono" aria-required="true">
+            <label for="shortDesc" class="block text-sm text-gray-300 mb-2">简短描述</label>
+            <textarea id="shortDesc" rows="2" placeholder="一句话说明技能用途" class="w-full p-4 rounded-xl mb-4 text-sm" aria-required="true"></textarea>
+            <label for="overview" class="block text-sm text-gray-300 mb-2">详细概述</label>
+            <textarea id="overview" rows="2" placeholder="技能的详细说明" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
+            <label for="usage" class="block text-sm text-gray-300 mb-2">使用说明</label>
+            <textarea id="usage" rows="2" placeholder="如何使用这个技能" class="w-full p-4 rounded-xl mb-4 text-sm"></textarea>
             <button onclick="generateNewSkill()" class="neon-btn w-full py-4 rounded-xl font-bold text-base">生成 SKILL.md</button>
           </div>
           <div id="resultBox" class="hidden">
@@ -115,13 +127,14 @@
       </div>
     </div>
   </section>
+  </main>
 
   <!-- 技能详情模态框 -->
-  <div id="skillDetailsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+  <div id="skillDetailsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="skillDetailsCategory">
     <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
       <!-- 关闭按钮 -->
-      <button onclick="closeSkillDetails()" class="absolute top-4 right-4 text-cyan-400 hover:text-cyan-300 text-2xl">
-        <i class="fas fa-times"></i>
+      <button onclick="closeSkillDetails()" class="absolute top-4 right-4 text-cyan-400 hover:text-cyan-300 text-2xl" aria-label="关闭技能详情">
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
 
       <!-- 标题 -->
@@ -143,25 +156,25 @@
   </footer>
 
   <!-- 设置面板模态框 -->
-  <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+  <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
       <!-- 关闭按钮 -->
-      <button onclick="closeSettings()" class="absolute top-4 right-4 text-cyan-400 hover:text-cyan-300 text-2xl">
-        <i class="fas fa-times"></i>
+      <button onclick="closeSettings()" class="absolute top-4 right-4 text-cyan-400 hover:text-cyan-300 text-2xl" aria-label="关闭设置">
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
 
       <!-- 标题 -->
-      <h2 class="text-2xl font-bold holographic mb-6">⚙️ AI 优化设置</h2>
+      <h2 id="settingsTitle" class="text-2xl font-bold holographic mb-6">⚙️ AI 优化设置</h2>
 
       <!-- API 配置 -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-cyan-300 mb-3">API 配置</h3>
 
-        <label class="block text-sm text-gray-300 mb-2">API 端点</label>
+        <label for="apiEndpoint" class="block text-sm text-gray-300 mb-2">API 端点</label>
         <input id="apiEndpoint" type="text" placeholder="https://api.openai.com/v1"
                class="w-full p-3 rounded-xl mb-4 text-sm">
 
-        <label class="block text-sm text-gray-300 mb-2">API Key</label>
+        <label for="apiKey" class="block text-sm text-gray-300 mb-2">API Key</label>
         <input id="apiKey" type="password" placeholder="sk-..."
                class="w-full p-3 rounded-xl mb-2 text-sm">
 
@@ -170,13 +183,13 @@
           <span>保存 API Key（下次自动填充）</span>
         </label>
 
-        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4">
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4" role="alert">
           <p class="text-xs text-yellow-300">
             ⚠️ <strong>安全提示：</strong>API Key 将存储在浏览器本地，存在一定风险。建议使用受限权限的 Key 或选择"仅本次使用"。
           </p>
         </div>
 
-        <label class="block text-sm text-gray-300 mb-2">模型</label>
+        <label for="modelSelect" class="block text-sm text-gray-300 mb-2">模型</label>
         <div class="flex gap-2 mb-4">
           <select id="modelSelect" class="flex-1 p-3 rounded-xl text-sm">
             <option value="gpt-4o">gpt-4o</option>
@@ -184,8 +197,8 @@
             <option value="gpt-4-turbo">gpt-4-turbo</option>
             <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
           </select>
-          <button onclick="refreshModels()" class="neon-btn px-4 py-3 rounded-xl text-sm">
-            <i class="fas fa-sync-alt"></i> 刷新
+          <button onclick="refreshModels()" class="neon-btn px-4 py-3 rounded-xl text-sm" aria-label="刷新模型列表">
+            <i class="fas fa-sync-alt" aria-hidden="true"></i> 刷新
           </button>
         </div>
       </div>
@@ -194,7 +207,7 @@
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-magenta-300 mb-3">Prompt 模板</h3>
 
-        <label class="block text-sm text-gray-300 mb-2">预设模板</label>
+        <label for="promptTemplate" class="block text-sm text-gray-300 mb-2">预设模板</label>
         <select id="promptTemplate" onchange="onTemplateChange()" class="w-full p-3 rounded-xl mb-4 text-sm">
           <option value="professional">专业润色</option>
           <option value="examples">补充示例</option>
@@ -203,7 +216,7 @@
         </select>
 
         <div id="customPromptSection" class="hidden">
-          <label class="block text-sm text-gray-300 mb-2">自定义 Prompt</label>
+          <label for="customPrompt" class="block text-sm text-gray-300 mb-2">自定义 Prompt</label>
           <textarea id="customPrompt" rows="6" placeholder="输入你的 Prompt 模板..."
                     class="w-full p-3 rounded-xl mb-2 text-sm font-mono"></textarea>
           <div class="text-xs text-gray-400 mb-4">

@@ -2,6 +2,7 @@
 export class SkillsManager {
   constructor() {
     this.skillsData = [];
+    this.previousFocusElement = null;
   }
 
   async loadSkills() {
@@ -21,14 +22,18 @@ export class SkillsManager {
       // 清空容器
       container.innerHTML = '';
 
+      // 移除加载状态
+      container.setAttribute('aria-busy', 'false');
+
       // 渲染技能卡片
       this.renderSkillCards(container);
 
     } catch (error) {
       console.error('Load skills error:', error);
+      container.setAttribute('aria-busy', 'false');
       container.innerHTML = `
-        <div class="col-span-full text-center text-red-400">
-          <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+        <div class="col-span-full text-center text-red-400" role="alert">
+          <i class="fas fa-exclamation-triangle text-4xl mb-4" aria-hidden="true"></i>
           <p>加载技能数据失败，请刷新页面重试</p>
         </div>
       `;
@@ -40,25 +45,36 @@ export class SkillsManager {
     this.skillsData.forEach(category => {
       const card = document.createElement('div');
       card.className = `glass-card rounded-2xl p-6 border-${category.color}-500/30 cursor-pointer hover:scale-105 transition-transform`;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `查看 ${category.category} 类别的 ${category.skills.length} 个技能详情`);
 
       const skillsList = category.skills.map(skill =>
         `<li class="flex items-center gap-2">
-          <i class="fas fa-check text-${category.color}-400 text-xs"></i>
+          <i class="fas fa-check text-${category.color}-400 text-xs" aria-hidden="true"></i>
           ${this.escapeHtml(skill.name)}
         </li>`
       ).join('');
 
       card.innerHTML = `
-        <div class="text-4xl mb-4 skill-icon">${category.icon}</div>
+        <div class="text-4xl mb-4 skill-icon" aria-hidden="true">${category.icon}</div>
         <h4 class="text-xl font-semibold mb-3 text-${category.color}-300">${this.escapeHtml(category.category)}</h4>
         <ul class="space-y-2 text-sm text-gray-300">
           ${skillsList}
         </ul>
       `;
 
-      // 添加点击事件显示详情
-      card.addEventListener('click', () => {
+      // 添加点击和键盘事件
+      const handleActivation = () => {
         this.showSkillDetails(category);
+      };
+
+      card.addEventListener('click', handleActivation);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleActivation();
+        }
       });
 
       container.appendChild(card);
@@ -66,6 +82,9 @@ export class SkillsManager {
   }
 
   showSkillDetails(category) {
+    // 保存当前焦点
+    this.previousFocusElement = document.activeElement;
+
     const modal = document.getElementById('skillDetailsModal');
     const icon = document.getElementById('skillDetailsIcon');
     const categoryName = document.getElementById('skillDetailsCategory');
@@ -90,12 +109,52 @@ export class SkillsManager {
     // 显示模态框
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+
+    // 应用焦点陷阱
+    this.trapFocus(modal);
   }
 
   closeSkillDetails() {
     const modal = document.getElementById('skillDetailsModal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+
+    // 恢复焦点
+    if (this.previousFocusElement) {
+      this.previousFocusElement.focus();
+      this.previousFocusElement = null;
+    }
+  }
+
+  trapFocus(modal) {
+    const focusableElements = modal.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    const handleTabKey = (e) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    modal.addEventListener('keydown', handleTabKey);
+
+    // 自动聚焦第一个元素
+    if (firstElement) {
+      firstElement.focus();
+    }
   }
 
   escapeHtml(text) {

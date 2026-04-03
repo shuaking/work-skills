@@ -20,6 +20,39 @@ window.currentSkillMd = null;
 window.currentSkillId = null;
 window.optimizedSkillMd = null;
 
+// 焦点管理
+let previousFocusElement = null;
+
+// 焦点陷阱辅助函数
+function trapFocus(modal) {
+  const focusableElements = modal.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  modal.addEventListener('keydown', function(e) {
+    if (e.key !== 'Tab') return;
+
+    if (e.shiftKey) {
+      if (document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      }
+    } else {
+      if (document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  });
+
+  // 自动聚焦第一个元素
+  if (firstElement) {
+    firstElement.focus();
+  }
+}
+
 // ========== 工具函数 ==========
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
@@ -48,6 +81,9 @@ function escapeHtml(text) {
 
 // ========== 设置面板功能 ==========
 window.openSettings = function() {
+  // 保存当前焦点
+  previousFocusElement = document.activeElement;
+
   const modal = document.getElementById('settingsModal');
   modal.classList.remove('hidden');
   modal.classList.add('flex');
@@ -63,12 +99,21 @@ window.openSettings = function() {
 
   // 显示/隐藏自定义 Prompt 区域
   onTemplateChange();
+
+  // 应用焦点陷阱
+  trapFocus(modal);
 };
 
 window.closeSettings = function() {
   const modal = document.getElementById('settingsModal');
   modal.classList.add('hidden');
   modal.classList.remove('flex');
+
+  // 恢复焦点
+  if (previousFocusElement) {
+    previousFocusElement.focus();
+    previousFocusElement = null;
+  }
 };
 
 window.saveSettings = function() {
