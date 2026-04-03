@@ -615,11 +615,18 @@ document.addEventListener('DOMContentLoaded', function() {
   const deploymentModeEl = document.getElementById('deploymentMode');
   if (deploymentModeEl) {
     const config = configManager.loadConfig();
-    const isProxy = config.apiEndpoint.includes('/api/openai-proxy');
-    if (isProxy) {
-      deploymentModeEl.innerHTML = '<strong class="text-green-400">✓ Vercel 部署（AI 功能已启用）</strong>';
+    const endpoint = config.apiEndpoint;
+
+    if (endpoint.includes('/api/openai-proxy')) {
+      // 使用 Vercel 代理（AI 功能已启用）
+      if (endpoint.includes('YOUR-PROJECT')) {
+        deploymentModeEl.innerHTML = '<strong class="text-yellow-400">⚠️ 需要配置 Vercel 代理 URL</strong>';
+      } else {
+        deploymentModeEl.innerHTML = '<strong class="text-green-400">✓ Vercel 代理（AI 功能已启用）</strong>';
+      }
     } else {
-      deploymentModeEl.innerHTML = '<strong class="text-yellow-400">GitHub Pages（AI 功能受限）</strong>';
+      // 直连 OpenAI（CORS 限制）
+      deploymentModeEl.innerHTML = '<strong class="text-red-400">✗ 直连模式（AI 功能受限）</strong>';
     }
   }
 

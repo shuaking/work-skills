@@ -1,20 +1,23 @@
 // ========== 配置管理模块 ==========
 
-// 自动检测部署环境
-function detectApiEndpoint() {
-  const hostname = window.location.hostname;
+// Vercel 代理端点配置
+// 部署到 Vercel 后，将此 URL 替换为你的实际 Vercel URL
+const VERCEL_PROXY_URL = 'https://YOUR-PROJECT.vercel.app/api/openai-proxy';
 
-  // Vercel 部署（支持 AI 功能）
+// 检测是否已配置 Vercel 代理
+function getApiEndpoint() {
+  // 如果已配置 Vercel 代理，使用代理（GitHub Pages 和 Vercel 都能用 AI）
+  if (!VERCEL_PROXY_URL.includes('YOUR-PROJECT')) {
+    return VERCEL_PROXY_URL;
+  }
+
+  // 未配置时的回退：自动检测
+  const hostname = window.location.hostname;
   if (hostname.includes('vercel.app') || hostname.includes('vercel.com')) {
     return window.location.origin + '/api/openai-proxy';
   }
 
-  // 自定义域名（假设使用 Vercel）
-  if (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.includes('github.io')) {
-    return window.location.origin + '/api/openai-proxy';
-  }
-
-  // GitHub Pages 或本地开发（直接调用 OpenAI，会有 CORS 限制）
+  // GitHub Pages 或本地（CORS 限制）
   return 'https://api.openai.com/v1';
 }
 
@@ -23,7 +26,7 @@ export class ConfigManager {
     this.storageKey = 'skillai_config';
     this.sessionKey = 'skillai_session'; // 用于存储敏感数据
     this.defaultConfig = {
-      apiEndpoint: detectApiEndpoint(),
+      apiEndpoint: getApiEndpoint(),
       apiKey: '',
       model: 'gpt-4o',
       promptTemplate: 'professional',
