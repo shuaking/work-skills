@@ -1,10 +1,29 @@
 // ========== 配置管理模块 ==========
+
+// 自动检测部署环境
+function detectApiEndpoint() {
+  const hostname = window.location.hostname;
+
+  // Vercel 部署（支持 AI 功能）
+  if (hostname.includes('vercel.app') || hostname.includes('vercel.com')) {
+    return window.location.origin + '/api/openai-proxy';
+  }
+
+  // 自定义域名（假设使用 Vercel）
+  if (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.includes('github.io')) {
+    return window.location.origin + '/api/openai-proxy';
+  }
+
+  // GitHub Pages 或本地开发（直接调用 OpenAI，会有 CORS 限制）
+  return 'https://api.openai.com/v1';
+}
+
 export class ConfigManager {
   constructor() {
     this.storageKey = 'skillai_config';
     this.sessionKey = 'skillai_session'; // 用于存储敏感数据
     this.defaultConfig = {
-      apiEndpoint: 'https://api.openai.com/v1',
+      apiEndpoint: detectApiEndpoint(),
       apiKey: '',
       model: 'gpt-4o',
       promptTemplate: 'professional',

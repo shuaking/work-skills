@@ -611,6 +611,18 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('githubLink').href = repoUrl;
   document.getElementById('installCommand').textContent = `pip install git+${repoUrl}.git`;
 
+  // 显示部署模式
+  const deploymentModeEl = document.getElementById('deploymentMode');
+  if (deploymentModeEl) {
+    const config = configManager.loadConfig();
+    const isProxy = config.apiEndpoint.includes('/api/openai-proxy');
+    if (isProxy) {
+      deploymentModeEl.innerHTML = '<strong class="text-green-400">✓ Vercel 部署（AI 功能已启用）</strong>';
+    } else {
+      deploymentModeEl.innerHTML = '<strong class="text-yellow-400">GitHub Pages（AI 功能受限）</strong>';
+    }
+  }
+
   // 初始化粒子系统
   particleSystem = new ParticleSystem('particles');
 

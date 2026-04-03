@@ -32,12 +32,15 @@ export class AIClient {
     this.endpoint = config.apiEndpoint;
     this.apiKey = config.apiKey;
     this.model = config.model;
+    this.isProxy = this.endpoint.includes('/api/openai-proxy');
   }
 
   async getModels() {
     try {
+      const url = this.isProxy ? this.endpoint : `${this.endpoint}/models`;
+
       const response = await fetchWithRetry(
-        `${this.endpoint}/models`,
+        url,
         {
           method: 'GET',
           headers: {
@@ -71,29 +74,38 @@ export class AIClient {
 
   async optimizeSkill(skillMd, systemPrompt) {
     try {
+      const url = this.isProxy ? this.endpoint : `${this.endpoint}/chat/completions`;
+
+      const requestBody = {
+        model: this.model,
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
+          },
+          {
+            role: 'user',
+            content: `请优化以下 SKILL.md 内容：\n\n${skillMd}`
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 2000
+      };
+
+      // 如果是代理端点，添加 endpoint 字段
+      if (this.isProxy) {
+        requestBody.endpoint = '/chat/completions';
+      }
+
       const response = await fetchWithRetry(
-        `${this.endpoint}/chat/completions`,
+        url,
         {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${this.apiKey}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            model: this.model,
-            messages: [
-              {
-                role: 'system',
-                content: systemPrompt
-              },
-              {
-                role: 'user',
-                content: `请优化以下 SKILL.md 内容：\n\n${skillMd}`
-              }
-            ],
-            temperature: 0.7,
-            max_tokens: 2000
-          })
+          body: JSON.stringify(requestBody)
         },
         3,
         30000 // AI 请求超时时间更长
