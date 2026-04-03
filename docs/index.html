@@ -178,14 +178,9 @@
         <input id="apiKey" type="password" placeholder="sk-..."
                class="w-full p-3 rounded-xl mb-2 text-sm">
 
-        <label class="flex items-center gap-2 text-sm text-gray-400 mb-4">
-          <input id="saveApiKey" type="checkbox" class="rounded">
-          <span>保存 API Key（下次自动填充）</span>
-        </label>
-
-        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4" role="alert">
-          <p class="text-xs text-yellow-300">
-            ⚠️ <strong>安全提示：</strong>API Key 将存储在浏览器本地，存在一定风险。建议使用受限权限的 Key 或选择"仅本次使用"。
+        <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 mb-4" role="alert">
+          <p class="text-xs text-blue-300">
+            🔒 <strong>安全说明：</strong>API Key 仅在当前标签页会话中保存，关闭标签页后自动清除。我们不会将您的 API Key 持久化存储。
           </p>
         </div>
 

@@ -92,7 +92,6 @@ window.openSettings = function() {
   const config = configManager.loadConfig();
   document.getElementById('apiEndpoint').value = config.apiEndpoint;
   document.getElementById('apiKey').value = config.apiKey;
-  document.getElementById('saveApiKey').checked = config.saveApiKey;
   document.getElementById('modelSelect').value = config.model;
   document.getElementById('promptTemplate').value = config.promptTemplate;
   document.getElementById('customPrompt').value = config.customPrompt;
@@ -120,7 +119,6 @@ window.saveSettings = function() {
   const config = {
     apiEndpoint: document.getElementById('apiEndpoint').value.trim(),
     apiKey: document.getElementById('apiKey').value.trim(),
-    saveApiKey: document.getElementById('saveApiKey').checked,
     model: document.getElementById('modelSelect').value,
     promptTemplate: document.getElementById('promptTemplate').value,
     customPrompt: document.getElementById('customPrompt').value
@@ -147,7 +145,6 @@ window.resetSettings = function() {
     const config = configManager.resetConfig();
     document.getElementById('apiEndpoint').value = config.apiEndpoint;
     document.getElementById('apiKey').value = '';
-    document.getElementById('saveApiKey').checked = false;
     document.getElementById('modelSelect').value = config.model;
     document.getElementById('promptTemplate').value = config.promptTemplate;
     document.getElementById('customPrompt').value = '';

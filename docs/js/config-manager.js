@@ -2,43 +2,51 @@
 export class ConfigManager {
   constructor() {
     this.storageKey = 'skillai_config';
+    this.sessionKey = 'skillai_session'; // 用于存储敏感数据
     this.defaultConfig = {
       apiEndpoint: 'https://api.openai.com/v1',
       apiKey: '',
       model: 'gpt-4o',
       promptTemplate: 'professional',
-      customPrompt: '',
-      saveApiKey: false
+      customPrompt: ''
     };
   }
 
   loadConfig() {
     try {
+      // 从 localStorage 加载非敏感配置
       const stored = localStorage.getItem(this.storageKey);
-      if (stored) {
-        const config = JSON.parse(stored);
-        // 解码 API Key
-        if (config.apiKey) {
-          config.apiKey = this.decodeApiKey(config.apiKey);
-        }
-        return { ...this.defaultConfig, ...config };
+      const config = stored ? JSON.parse(stored) : {};
+
+      // 从 sessionStorage 加载 API Key（仅在当前标签页会话中有效）
+      const sessionData = sessionStorage.getItem(this.sessionKey);
+      if (sessionData) {
+        const session = JSON.parse(sessionData);
+        config.apiKey = session.apiKey || '';
       }
+
+      return { ...this.defaultConfig, ...config };
     } catch (error) {
       console.error('加载配置失败:', error);
+      return { ...this.defaultConfig };
     }
-    return { ...this.defaultConfig };
   }
 
   saveConfig(config) {
     try {
-      const toSave = { ...config };
-      // 编码 API Key（简单混淆）
-      if (toSave.apiKey && toSave.saveApiKey) {
-        toSave.apiKey = this.encodeApiKey(toSave.apiKey);
+      // 分离敏感和非敏感数据
+      const { apiKey, ...nonSensitiveConfig } = config;
+
+      // 非敏感配置存储到 localStorage（持久化）
+      localStorage.setItem(this.storageKey, JSON.stringify(nonSensitiveConfig));
+
+      // API Key 存储到 sessionStorage（标签页关闭时自动清除）
+      if (apiKey && apiKey.trim() !== '') {
+        sessionStorage.setItem(this.sessionKey, JSON.stringify({ apiKey }));
       } else {
-        toSave.apiKey = ''; // 不保存
+        sessionStorage.removeItem(this.sessionKey);
       }
-      localStorage.setItem(this.storageKey, JSON.stringify(toSave));
+
       return true;
     } catch (error) {
       console.error('保存配置失败:', error);
@@ -48,6 +56,7 @@ export class ConfigManager {
 
   resetConfig() {
     localStorage.removeItem(this.storageKey);
+    sessionStorage.removeItem(this.sessionKey);
     return { ...this.defaultConfig };
   }
 
@@ -62,17 +71,5 @@ export class ConfigManager {
       return { valid: false, error: '请选择模型' };
     }
     return { valid: true };
-  }
-
-  encodeApiKey(key) {
-    return btoa(key); // Base64 编码（非加密）
-  }
-
-  decodeApiKey(encoded) {
-    try {
-      return atob(encoded);
-    } catch {
-      return encoded; // 如果解码失败，返回原值
-    }
   }
 }
