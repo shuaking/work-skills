@@ -22,7 +22,9 @@
       "Read(//tmp/**)",
       "Bash(grep -E \"\\\\.\\(css|js\\)$\")",
       "Bash(git restore:*)",
-      "Bash(grep -n \"innerHTML\" js/*.js index.html)"
+      "Bash(grep -n \"innerHTML\" js/*.js index.html)",
+      "Bash(curl -s -I https://shuaking.github.io/work-skills/)",
+      "Bash(curl -s https://shuaking.github.io/work-skills/)"
     ]
   }
 }
