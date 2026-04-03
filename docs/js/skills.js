@@ -1,4 +1,32 @@
 // ========== 技能加载与展示模块 ==========
+
+// 通用重试工具函数
+async function fetchWithRetry(url, options = {}, maxRetries = 3, timeout = 10000) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+
+      // 如果是超时或网络错误，等待后重试
+      if (error.name === 'AbortError' || error.message.includes('fetch')) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+
 export class SkillsManager {
   constructor() {
     this.skillsData = [];
@@ -10,8 +38,11 @@ export class SkillsManager {
     const title = document.getElementById('skillsTitle');
 
     try {
-      const response = await fetch('skills.json');
-      if (!response.ok) throw new Error('Failed to load skills.json');
+      const response = await fetchWithRetry('skills.json', {}, 3, 10000);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
       this.skillsData = await response.json();
       const totalSkills = this.skillsData.reduce((sum, cat) => sum + cat.skills.length, 0);
@@ -31,12 +62,37 @@ export class SkillsManager {
     } catch (error) {
       console.error('Load skills error:', error);
       container.setAttribute('aria-busy', 'false');
-      container.innerHTML = `
-        <div class="col-span-full text-center text-red-400" role="alert">
-          <i class="fas fa-exclamation-triangle text-4xl mb-4" aria-hidden="true"></i>
-          <p>加载技能数据失败，请刷新页面重试</p>
-        </div>
-      `;
+
+      // 构建错误提示
+      container.innerHTML = '';
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'col-span-full text-center text-red-400';
+      errorDiv.setAttribute('role', 'alert');
+
+      const icon = document.createElement('i');
+      icon.className = 'fas fa-exclamation-triangle text-4xl mb-4';
+      icon.setAttribute('aria-hidden', 'true');
+
+      const message = document.createElement('p');
+      message.className = 'mb-4';
+      if (error.name === 'AbortError') {
+        message.textContent = '加载超时，请检查网络连接后刷新页面';
+      } else if (error.message.includes('fetch')) {
+        message.textContent = '网络连接失败，请检查网络后刷新页面';
+      } else {
+        message.textContent = '加载技能数据失败，请刷新页面重试';
+      }
+
+      const retryBtn = document.createElement('button');
+      retryBtn.className = 'neon-btn px-6 py-2 rounded-xl text-sm';
+      retryBtn.textContent = '🔄 重新加载';
+      retryBtn.onclick = () => this.loadSkills();
+
+      errorDiv.appendChild(icon);
+      errorDiv.appendChild(message);
+      errorDiv.appendChild(retryBtn);
+      container.appendChild(errorDiv);
+
       this.showToast('加载技能数据失败', 'error');
     }
   }
