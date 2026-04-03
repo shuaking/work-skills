@@ -209,7 +209,12 @@ window.runSummarize = function() {
     return;
   }
   const result = text.length > 50 ? text.slice(0, 50) + '...' : text;
-  document.getElementById('demoResult').innerHTML = `<strong class="text-cyan-400">📋 摘要结果：</strong><br><span class="text-white">${result}</span>`;
+  const resultElement = document.getElementById('demoResult');
+  resultElement.innerHTML = '<strong class="text-cyan-400">📋 摘要结果：</strong><br>';
+  const resultSpan = document.createElement('span');
+  resultSpan.className = 'text-white';
+  resultSpan.textContent = result;
+  resultElement.appendChild(resultSpan);
   showToast('摘要生成成功！');
 };
 
@@ -219,8 +224,20 @@ window.generateAIPrompt = function() {
     showToast('请输入主题！', 'error');
     return;
   }
-  const result = `你是一个世界级专家。请详细讲解「${topic}」...`;
-  document.getElementById('aiDemoResult').innerHTML = `<strong class="text-magenta-400">🤖 生成的提示词：</strong><br><br>${result}<br><br><small class="text-cyan-400">（真实调用：generate_prompt("${topic}")）</small>`;
+  const resultElement = document.getElementById('aiDemoResult');
+  resultElement.innerHTML = '<strong class="text-magenta-400">🤖 生成的提示词：</strong><br><br>';
+
+  const promptText = document.createElement('span');
+  promptText.textContent = `你是一个世界级专家。请详细讲解「${topic}」...`;
+  resultElement.appendChild(promptText);
+
+  const callInfo = document.createElement('small');
+  callInfo.className = 'text-cyan-400';
+  callInfo.textContent = `（真实调用：generate_prompt("${topic}")）`;
+  resultElement.appendChild(document.createElement('br'));
+  resultElement.appendChild(document.createElement('br'));
+  resultElement.appendChild(callInfo);
+
   showToast('提示词生成成功！');
 };
 
@@ -268,28 +285,58 @@ ${usage || '使用方法：\n\n1. 调用技能\n2. 提供必要的参数\n3. 获
 - 注意事项 2
 `;
 
-  const resultHTML = `
-    <div class="bg-black/50 p-4 rounded-xl max-h-80 overflow-auto border border-cyan-500/30">
-      <pre class="text-cyan-400 text-xs whitespace-pre-wrap">${escapeHtml(skillMd)}</pre>
-    </div>
-    <div class="flex gap-2 mt-4">
-      <button onclick="copySkillMd()" class="flex-1 bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/50 text-cyan-300 py-3 rounded-xl font-semibold text-xs transition-all">📋 复制</button>
-      <button onclick="downloadSkillMd('${skillId}')" class="flex-1 bg-magenta-600/20 hover:bg-magenta-600/40 border border-magenta-500/50 text-magenta-300 py-3 rounded-xl font-semibold text-xs transition-all">💾 下载</button>
-      <button onclick="submitSkillIssue('${skillId}')" class="flex-1 bg-yellow-600/20 hover:bg-yellow-600/40 border border-yellow-500/50 text-yellow-300 py-3 rounded-xl font-semibold text-xs transition-all">🚀 Issue</button>
-    </div>
-    <div class="mt-4">
-      <button onclick="optimizeSkillWithAI()" class="w-full bg-gradient-to-r from-cyan-600/30 to-magenta-600/30 hover:from-cyan-600/50 hover:to-magenta-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all">
-        ✨ AI 优化
-      </button>
-    </div>
-  `;
+  // 使用 DOM 方法构建结果，避免 XSS
+  const resultContent = document.getElementById('resultContent');
+  resultContent.innerHTML = '';
+
+  // 创建预览容器
+  const previewDiv = document.createElement('div');
+  previewDiv.className = 'bg-black/50 p-4 rounded-xl max-h-80 overflow-auto border border-cyan-500/30';
+  const pre = document.createElement('pre');
+  pre.className = 'text-cyan-400 text-xs whitespace-pre-wrap';
+  pre.textContent = skillMd;
+  previewDiv.appendChild(pre);
+  resultContent.appendChild(previewDiv);
+
+  // 创建按钮组
+  const buttonGroup = document.createElement('div');
+  buttonGroup.className = 'flex gap-2 mt-4';
+
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'flex-1 bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/50 text-cyan-300 py-3 rounded-xl font-semibold text-xs transition-all';
+  copyBtn.textContent = '📋 复制';
+  copyBtn.onclick = copySkillMd;
+
+  const downloadBtn = document.createElement('button');
+  downloadBtn.className = 'flex-1 bg-magenta-600/20 hover:bg-magenta-600/40 border border-magenta-500/50 text-magenta-300 py-3 rounded-xl font-semibold text-xs transition-all';
+  downloadBtn.textContent = '💾 下载';
+  downloadBtn.onclick = () => downloadSkillMd(skillId);
+
+  const issueBtn = document.createElement('button');
+  issueBtn.className = 'flex-1 bg-yellow-600/20 hover:bg-yellow-600/40 border border-yellow-500/50 text-yellow-300 py-3 rounded-xl font-semibold text-xs transition-all';
+  issueBtn.textContent = '🚀 Issue';
+  issueBtn.onclick = () => submitSkillIssue(skillId);
+
+  buttonGroup.appendChild(copyBtn);
+  buttonGroup.appendChild(downloadBtn);
+  buttonGroup.appendChild(issueBtn);
+  resultContent.appendChild(buttonGroup);
+
+  // 创建 AI 优化按钮
+  const aiOptDiv = document.createElement('div');
+  aiOptDiv.className = 'mt-4';
+  const aiOptBtn = document.createElement('button');
+  aiOptBtn.className = 'w-full bg-gradient-to-r from-cyan-600/30 to-magenta-600/30 hover:from-cyan-600/50 hover:to-magenta-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all';
+  aiOptBtn.textContent = '✨ AI 优化';
+  aiOptBtn.onclick = optimizeSkillWithAI;
+  aiOptDiv.appendChild(aiOptBtn);
+  resultContent.appendChild(aiOptDiv);
 
   // 保存到全局变量
   window.currentSkillMd = skillMd;
   window.currentSkillId = skillId;
   window.optimizedSkillMd = null;
 
-  document.getElementById('resultContent').innerHTML = resultHTML;
   document.getElementById('resultBox').classList.remove('hidden');
   showToast('SKILL.md 生成成功！');
 };
@@ -345,7 +392,7 @@ window.optimizeSkillWithAI = async function() {
     <div class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-500 mb-4"></div>
       <p class="text-cyan-400 text-lg font-bold">🤖 AI 正在优化中...</p>
-      <p class="text-gray-400 text-sm mt-2">正在调用 ${config.model} 优化内容...</p>
+      <p class="text-gray-400 text-sm mt-2">正在调用 ${escapeHtml(config.model)} 优化内容...</p>
     </div>
   `;
   document.getElementById('resultContent').innerHTML = loadingHTML;
@@ -360,45 +407,87 @@ window.optimizeSkillWithAI = async function() {
     const optimizedMd = await aiClient.optimizeWithRetry(window.currentSkillMd, systemPrompt);
     window.optimizedSkillMd = optimizedMd;
 
-    const comparisonHTML = `
-      <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-xl font-bold text-cyan-400">✨ AI 优化完成！</h3>
-          <div class="flex gap-2">
-            <button onclick="showVersion('original')" id="btnOriginal" class="px-4 py-2 rounded-lg border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/20 transition-all">
-              原始版本
-            </button>
-            <button onclick="showVersion('optimized')" id="btnOptimized" class="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600/30 to-magenta-600/30 border border-cyan-500/50 text-white transition-all">
-              优化版本
-            </button>
-          </div>
-        </div>
+    // 使用 DOM 方法构建结果，避免 XSS
+    const resultContent = document.getElementById('resultContent');
+    resultContent.innerHTML = '';
 
-        <div id="versionContent" class="glass-card p-6 rounded-xl">
-          <pre class="text-sm text-gray-300 whitespace-pre-wrap font-mono">${escapeHtml(optimizedMd)}</pre>
-        </div>
+    const container = document.createElement('div');
+    container.className = 'space-y-4';
 
-        <div class="flex flex-wrap gap-3">
-          <button onclick="copyOptimizedSkillMd()" class="flex-1 bg-cyan-600/30 hover:bg-cyan-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all">
-            📋 复制优化版
-          </button>
-          <button onclick="downloadOptimizedSkillMd()" class="flex-1 bg-cyan-600/30 hover:bg-cyan-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all">
-            💾 下载优化版
-          </button>
-          <button onclick="submitSkillIssue('${window.currentSkillId}')" class="flex-1 bg-gradient-to-r from-cyan-600/30 to-magenta-600/30 hover:from-cyan-600/50 hover:to-magenta-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all">
-            🚀 提交 Issue (使用优化版)
-          </button>
-        </div>
+    // 标题和版本切换按钮
+    const header = document.createElement('div');
+    header.className = 'flex items-center justify-between';
 
-        <div class="text-center">
-          <button onclick="useOriginalVersion()" class="text-gray-400 hover:text-cyan-400 text-sm underline transition-all">
-            ↩️ 使用原始版本
-          </button>
-        </div>
-      </div>
-    `;
+    const title = document.createElement('h3');
+    title.className = 'text-xl font-bold text-cyan-400';
+    title.textContent = '✨ AI 优化完成！';
+    header.appendChild(title);
 
-    document.getElementById('resultContent').innerHTML = comparisonHTML;
+    const btnGroup = document.createElement('div');
+    btnGroup.className = 'flex gap-2';
+
+    const btnOriginal = document.createElement('button');
+    btnOriginal.id = 'btnOriginal';
+    btnOriginal.className = 'px-4 py-2 rounded-lg border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/20 transition-all';
+    btnOriginal.textContent = '原始版本';
+    btnOriginal.onclick = () => showVersion('original');
+
+    const btnOptimized = document.createElement('button');
+    btnOptimized.id = 'btnOptimized';
+    btnOptimized.className = 'px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600/30 to-magenta-600/30 border border-cyan-500/50 text-white transition-all';
+    btnOptimized.textContent = '优化版本';
+    btnOptimized.onclick = () => showVersion('optimized');
+
+    btnGroup.appendChild(btnOriginal);
+    btnGroup.appendChild(btnOptimized);
+    header.appendChild(btnGroup);
+    container.appendChild(header);
+
+    // 版本内容显示区域
+    const versionContent = document.createElement('div');
+    versionContent.id = 'versionContent';
+    versionContent.className = 'glass-card p-6 rounded-xl';
+    const pre = document.createElement('pre');
+    pre.className = 'text-sm text-gray-300 whitespace-pre-wrap font-mono';
+    pre.textContent = optimizedMd;
+    versionContent.appendChild(pre);
+    container.appendChild(versionContent);
+
+    // 操作按钮组
+    const actionBtns = document.createElement('div');
+    actionBtns.className = 'flex flex-wrap gap-3';
+
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'flex-1 bg-cyan-600/30 hover:bg-cyan-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all';
+    copyBtn.textContent = '📋 复制优化版';
+    copyBtn.onclick = copyOptimizedSkillMd;
+
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = 'flex-1 bg-cyan-600/30 hover:bg-cyan-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all';
+    downloadBtn.textContent = '💾 下载优化版';
+    downloadBtn.onclick = downloadOptimizedSkillMd;
+
+    const issueBtn = document.createElement('button');
+    issueBtn.className = 'flex-1 bg-gradient-to-r from-cyan-600/30 to-magenta-600/30 hover:from-cyan-600/50 hover:to-magenta-600/50 border border-cyan-500/50 text-white py-3 rounded-xl font-bold text-sm transition-all';
+    issueBtn.textContent = '🚀 提交 Issue (使用优化版)';
+    issueBtn.onclick = () => submitSkillIssue(window.currentSkillId);
+
+    actionBtns.appendChild(copyBtn);
+    actionBtns.appendChild(downloadBtn);
+    actionBtns.appendChild(issueBtn);
+    container.appendChild(actionBtns);
+
+    // 返回原始版本链接
+    const backLink = document.createElement('div');
+    backLink.className = 'text-center';
+    const backBtn = document.createElement('button');
+    backBtn.className = 'text-gray-400 hover:text-cyan-400 text-sm underline transition-all';
+    backBtn.textContent = '↩️ 使用原始版本';
+    backBtn.onclick = useOriginalVersion;
+    backLink.appendChild(backBtn);
+    container.appendChild(backLink);
+
+    resultContent.appendChild(container);
     showToast('AI 优化完成！', 'success');
 
   } catch (error) {
@@ -422,9 +511,13 @@ window.optimizeSkillWithAI = async function() {
 
 window.showVersion = function(version) {
   const content = version === 'original' ? window.currentSkillMd : window.optimizedSkillMd;
-  document.getElementById('versionContent').innerHTML = `
-    <pre class="text-sm text-gray-300 whitespace-pre-wrap font-mono">${escapeHtml(content)}</pre>
-  `;
+  const versionContent = document.getElementById('versionContent');
+  versionContent.innerHTML = '';
+
+  const pre = document.createElement('pre');
+  pre.className = 'text-sm text-gray-300 whitespace-pre-wrap font-mono';
+  pre.textContent = content;
+  versionContent.appendChild(pre);
 
   const btnOriginal = document.getElementById('btnOriginal');
   const btnOptimized = document.getElementById('btnOptimized');

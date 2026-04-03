@@ -21,7 +21,8 @@
       "Bash(pip list:*)",
       "Read(//tmp/**)",
       "Bash(grep -E \"\\\\.\\(css|js\\)$\")",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(grep -n \"innerHTML\" js/*.js index.html)"
     ]
   }
 }
