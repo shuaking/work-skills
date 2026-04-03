@@ -20,7 +20,8 @@
       "Bash(grep -v \"^\\\\.$\")",
       "Bash(pip list:*)",
       "Read(//tmp/**)",
-      "Bash(grep -E \"\\\\.\\(css|js\\)$\")"
+      "Bash(grep -E \"\\\\.\\(css|js\\)$\")",
+      "Bash(git restore:*)"
     ]
   }
 }
