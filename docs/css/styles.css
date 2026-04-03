@@ -195,9 +195,28 @@ body {
   align-items: center;
   gap: 12px;
   z-index: 1000;
-  animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
-  opacity: 0;
+  animation: slideIn 0.3s ease;
   font-size: 14px;
+  max-width: 400px;
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-close:hover {
+  opacity: 1;
 }
 
 @keyframes slideIn {

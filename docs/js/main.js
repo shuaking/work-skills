@@ -57,6 +57,8 @@ function trapFocus(modal) {
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = 'toast';
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
 
   const colors = {
     success: 'linear-gradient(135deg, #00ffff, #00ff00)',
@@ -64,13 +66,46 @@ function showToast(message, type = 'success') {
     info: 'linear-gradient(135deg, #00ffff, #ff00ff)'
   };
 
+  const durations = {
+    success: 3000,
+    info: 5000,
+    error: 7000
+  };
+
   toast.style.background = colors[type] || colors.success;
-  toast.innerHTML = `
-    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-    <span>${message}</span>
-  `;
+
+  // 图标
+  const icon = document.createElement('i');
+  icon.className = `fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}`;
+  icon.setAttribute('aria-hidden', 'true');
+  toast.appendChild(icon);
+
+  // 消息文本
+  const messageSpan = document.createElement('span');
+  messageSpan.textContent = message;
+  toast.appendChild(messageSpan);
+
+  // 关闭按钮
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'toast-close';
+  closeBtn.setAttribute('aria-label', '关闭通知');
+  closeBtn.innerHTML = '<i class="fas fa-times" aria-hidden="true"></i>';
+  closeBtn.onclick = () => {
+    toast.style.animation = 'slideOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  };
+  toast.appendChild(closeBtn);
+
   document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+
+  // 自动关闭
+  const duration = durations[type] || 3000;
+  setTimeout(() => {
+    if (document.body.contains(toast)) {
+      toast.style.animation = 'slideOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, duration);
 }
 
 const escapeHtmlDiv = document.createElement('div');
